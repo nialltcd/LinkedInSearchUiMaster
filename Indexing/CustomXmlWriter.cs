@@ -10,7 +10,7 @@ namespace LinkedInSearchUi.Indexing
          public void WriteToFile(List<Person> people)
         {
             XmlSerializer xs = new XmlSerializer(typeof(List<Person>));
-            TextWriter tw = new StreamWriter(@"U:\5th Year\Thesis\LinkedIn\XML\data.xml");
+            TextWriter tw = new StreamWriter(@"C:\Users\Niall\Documents\Visual Studio 2015\Projects\LinkedInSearchUi\LinkedIn Dataset\XML\data.xml");
             xs.Serialize(tw, people);
         }
     }

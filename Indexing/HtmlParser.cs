@@ -2,6 +2,7 @@
 using System.Linq;
 using HtmlAgilityPack;
 using LinkedInSearchUi.DataTypes;
+using System;
 
 namespace LinkedInSearchUi.Indexing
 {
@@ -9,13 +10,26 @@ namespace LinkedInSearchUi.Indexing
     {
         public Person GeneratePersonFromHtmlDocument(HtmlDocument document)
         {
+
             //Retrieve the person's name from the document
             var personName = GetPersonsName(document);
 
-            //Retrieve the persons prior experience from the document
-            var experiences = GetPersonsExperience(document);
+            var experiences = new List<Experience>();
+            var skills = new List<Skill>();
+            try
+            {
+                //Retrieve the persons prior experience from the document
+                experiences = GetPersonsExperience(document);
+            }
+            catch (Exception experienceException) { }
+            try
+            {
+                //Retrieve the persons prior experience from the document
+                skills = GetPersonsSkills(document);
+            }
+            catch (Exception skillException) { }
+            return new Person() { Name = personName, Experiences = experiences, Skills= skills };
 
-            return new Person() { Name = personName, Experiences = experiences };
         }
 
         private string GetPersonsName(HtmlDocument document)
@@ -39,10 +53,24 @@ namespace LinkedInSearchUi.Indexing
                 var experience = new Experience();
                 experience.Role = node.SelectSingleNode(".  //div[@class='postitle'] //span[@class='title']").InnerText;
                 experience.Organisation = node.SelectSingleNode(".//div[@class='postitle'] //span[@class='org summary']").InnerText;
-                experiences.Add(experience);
                 experience.Duration = node.SelectSingleNode(".//span[@class='duration']").InnerText;
+                experiences.Add(experience);
             }
             return experiences;
+        }
+
+        private List<Skill> GetPersonsSkills(HtmlDocument document)
+        {
+            List<Skill> skills = new List<Skill>();
+            var skillNode = document.DocumentNode.SelectNodes("//div[@id='profile-skills'] //div[@class='content'] //ol[@class='skills'] //li[@class='competency show-bean  ']");
+
+            foreach (var node in skillNode)
+            {
+                var skill = new Skill();
+                skill.Name = node.SelectSingleNode(".//span[@class='jellybean']").InnerText.Replace("\n",String.Empty);
+                skills.Add(skill);
+            }
+            return skills;
         }
     }
 }

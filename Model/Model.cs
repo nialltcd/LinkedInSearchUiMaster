@@ -12,10 +12,12 @@ namespace LinkedInSearchUi.Model
     {
         private HtmlParser _parser;
         private LuceneService _luceneService;
+        private CustomXmlWriter _customXmlWriter;
+
         public Model()
         {
             _parser = new HtmlParser();
-            
+            _customXmlWriter = new CustomXmlWriter();
         }
 
         public List<Person> ParseRawHtmlFilesFromDirectory()
@@ -28,9 +30,12 @@ namespace LinkedInSearchUi.Model
                 {
                     document.Load(file);
                     people.Add(_parser.GeneratePersonFromHtmlDocument(document));
+                    if (people.Count % 1000 == 0)
+                        Console.WriteLine(people.Count);
                 }
                 catch (Exception e) { }
             }
+            _customXmlWriter.WriteToFile(people);
             _luceneService = new LuceneService(people);
             return people;
         }

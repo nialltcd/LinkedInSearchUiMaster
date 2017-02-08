@@ -47,6 +47,10 @@ namespace LinkedInSearchUi.Indexing
                         document.Add(new Field("Duration", experience.Duration, Field.Store.YES, Field.Index.NOT_ANALYZED));
                         all += " "+experience.Organisation +" "+ experience.Role+" ";
                     }
+                    foreach(var skill in person.Skills)
+                    {
+                        document.Add(new Field("Skill",skill.Name,Field.Store.YES, Field.Index.NOT_ANALYZED));
+                    }
                     document.Add(new Field("All", all, Field.Store.YES, Field.Index.ANALYZED));
                     writer.AddDocument(document);
                 }
@@ -101,7 +105,12 @@ namespace LinkedInSearchUi.Indexing
                                 Duration = durations[i].StringValue
                             });
                         }
-
+                        person.Skills = new List<Skill>();
+                        var skills = doc.GetFields("Skill");
+                        foreach(var skill in skills)
+                        {
+                            person.Skills.Add(new Skill() { Name = skill.StringValue });
+                        }
                         searchResults.Add(person);
                     }
                 }
