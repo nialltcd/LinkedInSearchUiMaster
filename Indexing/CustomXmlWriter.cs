@@ -5,13 +5,28 @@ using System.Xml.Serialization;
 
 namespace LinkedInSearchUi.Indexing
 {
-    public class CustomXmlWriter
+    public class CustomXmlService
     {
-         public void WriteToFile(List<Person> people)
+        private XmlSerializer _serializer;
+        public CustomXmlService()
         {
-            XmlSerializer xs = new XmlSerializer(typeof(List<Person>));
-            TextWriter tw = new StreamWriter(@"C:\Users\Niall\Documents\Visual Studio 2015\Projects\LinkedInSearchUi\LinkedIn Dataset\XML\data.xml");
-            xs.Serialize(tw, people);
+            _serializer = new XmlSerializer(typeof(List<Person>));
         }
+
+
+         public void WriteToFile(List<Person> people, string filePath)
+        {
+            TextWriter tw = new StreamWriter(filePath);
+            _serializer.Serialize(tw, people);
+        }
+
+        public List<Person> ReadFromFile(string filePath)
+        {
+            StreamReader reader = new StreamReader(filePath);
+            List<Person> people = (List<Person>)_serializer.Deserialize(reader);
+            reader.Close();
+            return people;
+        }
+
     }
 }
