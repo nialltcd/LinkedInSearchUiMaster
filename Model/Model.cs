@@ -14,13 +14,13 @@ namespace LinkedInSearchUi.Model
         private HtmlParser _parser;
         private LuceneService _luceneService;
         private CustomXmlService _customXmlService;
-        private CompanyService _companyService;
+        private TrainingAndTestingService _trainingAndTestingService;
 
         public Model()
         {
             _parser = new HtmlParser();
             _customXmlService = new CustomXmlService();
-            _companyService = new CompanyService();
+            _trainingAndTestingService = new TrainingAndTestingService();
         }
 
         public List<Person> ParseRawHtmlFilesFromDirectory()
@@ -45,16 +45,16 @@ namespace LinkedInSearchUi.Model
 
         public List<Person> ParsePeopleFromXml()
         {
-            var people = _customXmlService.ReadFromFile(@"C:\Users\nihughes\Downloads\new_data.xml");
+            var people = _customXmlService.ReadFromFile(@"U:\5th Year\Thesis\LinkedIn\XML\training_set.xml");
             _luceneService = new LuceneService(people);
             return people;
         }
 
-        public void CreateTrainingAndTestSets()
+        public void CreateTrainingAndTestSetsBasedOnCompany()
         {
             List<Person> trainingSet = new List<Person>();
             List<Person> testingSet = new List<Person>();
-            var companies = _companyService.GenerateCompaniesWithCurrentEmployees(_customXmlService.ReadFromFile(@"C:\Users\nihughes\Downloads\new_data.xml"));
+            var companies = _trainingAndTestingService.GenerateCompaniesWithCurrentEmployees(_customXmlService.ReadFromFile(@"C:\Users\nihughes\Downloads\new_data.xml"));
             foreach(var company in companies)
             {
                 if(company.Employees.Count >1)
@@ -75,6 +75,34 @@ namespace LinkedInSearchUi.Model
             }
             _customXmlService.WriteToFile(trainingSet, @"U:\5th Year\Thesis\LinkedIn\XML\training_set.xml");
             _customXmlService.WriteToFile(testingSet, @"U:\5th Year\Thesis\LinkedIn\XML\testing_set.xml");
+
+        }
+
+        public void CreateTrainingAndTestSetsBasedOnJob()
+        {
+            List<Person> trainingSet = new List<Person>();
+            List<Person> testingSet = new List<Person>();
+            var jobs = _trainingAndTestingService.GenerateJobsWithCurrentEmployees(_customXmlService.ReadFromFile(@"C:\Users\nihughes\Downloads\new_data.xml"));
+            foreach (var job in jobs)
+            {
+                if (job.Employees.Count > 1)
+                {
+                    for (int i = 0; i < job.Employees.Count; i++)
+                    {
+                        if (i % 2 == 0)
+                        {
+                            testingSet.Add(job.Employees[i]);
+                        }
+                        else
+                        {
+                            trainingSet.Add(job.Employees[i]);
+                        }
+                    }
+                }
+                else { trainingSet.Add(job.Employees[0]); }
+            }
+            _customXmlService.WriteToFile(trainingSet, @"U:\5th Year\Thesis\LinkedIn\XML\training_set_jobs.xml");
+            _customXmlService.WriteToFile(testingSet, @"U:\5th Year\Thesis\LinkedIn\XML\testing_set_jobs.xml");
 
         }
 

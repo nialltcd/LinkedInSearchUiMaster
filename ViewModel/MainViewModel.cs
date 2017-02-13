@@ -32,9 +32,10 @@ namespace LinkedInSearchUi.ViewModel
         {
             _model = new Model.Model();
             //_allPeople = _model.ParseRawHtmlFilesFromDirectory();
-            //_allPeople = _model.ParsePeopleFromXml();
+            _allPeople = _model.ParsePeopleFromXml();
             //_model.GenerateCompanies(_allPeople);
-            _model.CreateTrainingAndTestSets();
+            //_model.CreateTrainingAndTestSetsBasedOnCompany();
+            //_model.CreateTrainingAndTestSetsBasedOnJob();
             SearchData = new ObservableCollection<Person>(_allPeople);
         }
 
