@@ -88,9 +88,11 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="DataTypes\Company.cs" />
+    <Compile Include="DataTypes\CompanyJobPair.cs" />
     <Compile Include="DataTypes\Education.cs" />
     <Compile Include="DataTypes\Job.cs" />
     <Compile Include="DataTypes\Skill.cs" />
+    <Compile Include="Indexing\CompanyJobPairService.cs" />
     <Compile Include="Indexing\TrainingAndTestingService.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />

@@ -6,6 +6,7 @@ using LinkedInSearchUi.DataTypes;
 using LinkedInSearchUi.Indexing;
 using System;
 using System.Linq;
+using System.Text;
 
 namespace LinkedInSearchUi.Model
 {
@@ -13,14 +14,16 @@ namespace LinkedInSearchUi.Model
     {
         private HtmlParser _parser;
         private LuceneService _luceneService;
-        private CustomXmlService _customXmlService;
         private TrainingAndTestingService _trainingAndTestingService;
+        private CompanyJobPairService _companyJobPairService;
+        private CustomXmlService<Person> _personCustomXmlService;
 
         public Model()
         {
+            _personCustomXmlService = new CustomXmlService<Person>();
             _parser = new HtmlParser();
-            _customXmlService = new CustomXmlService();
             _trainingAndTestingService = new TrainingAndTestingService();
+            _companyJobPairService = new CompanyJobPairService();
         }
 
         public List<Person> ParseRawHtmlFilesFromDirectory()
@@ -38,75 +41,21 @@ namespace LinkedInSearchUi.Model
                 }
                 catch (Exception e) { }
             }
-            _customXmlService.WriteToFile(people, @"C:\Users\Niall\Documents\Visual Studio 2015\Projects\LinkedInSearchUi\LinkedIn Dataset\XML\data.xml");
+            _personCustomXmlService.WriteToFile(people, @"C:\Users\Niall\Documents\Visual Studio 2015\Projects\LinkedInSearchUi\LinkedIn Dataset\XML\data.xml");
             _luceneService = new LuceneService(people);
             return people;
         }
 
         public List<Person> ParsePeopleFromXml()
         {
-            var people = _customXmlService.ReadFromFile(@"U:\5th Year\Thesis\LinkedIn\XML\training_set.xml");
+            var people = _personCustomXmlService.ReadFromFile(@"C:\Users\Niall\5th Year\Thesis\XML\all_people.xml");
             _luceneService = new LuceneService(people);
             return people;
         }
 
-        public void CreateTrainingAndTestSetsBasedOnCompany()
-        {
-            List<Person> trainingSet = new List<Person>();
-            List<Person> testingSet = new List<Person>();
-            var companies = _trainingAndTestingService.GenerateCompaniesWithCurrentEmployees(_customXmlService.ReadFromFile(@"C:\Users\nihughes\Downloads\new_data.xml"));
-            foreach(var company in companies)
-            {
-                if(company.Employees.Count >1)
-                {
-                    for(int i=0;i<company.Employees.Count;i++)
-                    {
-                        if(i%2==0)
-                        {
-                            testingSet.Add(company.Employees[i]);
-                        }
-                        else
-                        {
-                            trainingSet.Add(company.Employees[i]);
-                        }
-                    }
-                }
-                else { trainingSet.Add(company.Employees[0]); }
-            }
-            _customXmlService.WriteToFile(trainingSet, @"U:\5th Year\Thesis\LinkedIn\XML\training_set.xml");
-            _customXmlService.WriteToFile(testingSet, @"U:\5th Year\Thesis\LinkedIn\XML\testing_set.xml");
 
-        }
 
-        public void CreateTrainingAndTestSetsBasedOnJob()
-        {
-            List<Person> trainingSet = new List<Person>();
-            List<Person> testingSet = new List<Person>();
-            var jobs = _trainingAndTestingService.GenerateJobsWithCurrentEmployees(_customXmlService.ReadFromFile(@"C:\Users\nihughes\Downloads\new_data.xml"));
-            foreach (var job in jobs)
-            {
-                if (job.Employees.Count > 1)
-                {
-                    for (int i = 0; i < job.Employees.Count; i++)
-                    {
-                        if (i % 2 == 0)
-                        {
-                            testingSet.Add(job.Employees[i]);
-                        }
-                        else
-                        {
-                            trainingSet.Add(job.Employees[i]);
-                        }
-                    }
-                }
-                else { trainingSet.Add(job.Employees[0]); }
-            }
-            _customXmlService.WriteToFile(trainingSet, @"U:\5th Year\Thesis\LinkedIn\XML\training_set_jobs.xml");
-            _customXmlService.WriteToFile(testingSet, @"U:\5th Year\Thesis\LinkedIn\XML\testing_set_jobs.xml");
-
-        }
-
-        public void GenerateCompanies(List<Person> people)
+        public List<Company> GenerateCompanies(List<Person> people)
         {
             List<Company> companies = new List<Company>();
             foreach(var person in people)
@@ -125,11 +74,54 @@ namespace LinkedInSearchUi.Model
                     }                        
                 }
             }
-        }
+            return companies;
+        }    
+        
 
         public List<Person> LuceneSearch(string textSearch)
         {
             return _luceneService.SearchIndex(textSearch);
         }
+
+        #region Training and Testing Sets
+        public void CreateTrainingAndTestSetsBasedOnCompany()
+        {
+            _trainingAndTestingService.CreateTrainingAndTestSetsBasedOnCompany();
+        }
+
+        public void CreateTrainingAndTestSetsBasedOnJob()
+        {
+            _trainingAndTestingService.CreateTrainingAndTestSetsBasedOnJob();
+        }
+        #endregion
+
+        #region CompanyJobPairService
+
+        public List<CompanyJobPair> GenerateCompanyJobPairs(IEnumerable<Person> people)
+        {
+            return _companyJobPairService.GenerateCompanyJobPairs(people);
+        }
+
+        public List<CompanyJobPair> ParseCompanyJobPairsFromXml()
+        {
+            return _companyJobPairService.ParseCompanyJobPairsFromXml();
+        }
+
+        public void WriteCompanyJobPairsToXmlFile(List<CompanyJobPair> companyJobPairs)
+        {
+            _companyJobPairService.WriteCompanyJobPairsToXmlFile(companyJobPairs);
+        }
+
+        public void WriteCompanyJobPairsTopStatisticsToXmlFile(List<CompanyJobPair> companyJobPairs)
+        {
+            _companyJobPairService.WriteCompanyJobPairsTopStatisticsToXmlFile(companyJobPairs);
+        }
+
+        public void WriteCompanyJobPairsTopStatisticsToFileFormatted(List<CompanyJobPair> companyJobPairs)
+        {
+            _companyJobPairService.WriteCompanyJobPairsTopStatisticsToFileFormatted(companyJobPairs);
+        }
+        #endregion
+
     }
 }

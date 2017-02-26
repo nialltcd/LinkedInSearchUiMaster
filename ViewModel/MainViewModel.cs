@@ -32,8 +32,15 @@ namespace LinkedInSearchUi.ViewModel
         {
             _model = new Model.Model();
             //_allPeople = _model.ParseRawHtmlFilesFromDirectory();
-            _allPeople = _model.ParsePeopleFromXml();
+            //_allPeople = _model.ParsePeopleFromXml();
             //_model.GenerateCompanies(_allPeople);
+            //var companyJobPairs = _model.GenerateCompanyJobPairs(_allPeople);
+            var companyJobPairs = _model.ParseCompanyJobPairsFromXml();
+
+            //_model.WriteCompanyJobPairsToXmlFile(companyJobPairs);
+            //_model.WriteCompanyJobPairsTopStatisticsToXmlFile(companyJobPairs);
+            //_model.WriteCompanyJobPairsTopStatisticsToFileFormatted(companyJobPairs);
+
             //_model.CreateTrainingAndTestSetsBasedOnCompany();
             //_model.CreateTrainingAndTestSetsBasedOnJob();
             SearchData = new ObservableCollection<Person>(_allPeople);

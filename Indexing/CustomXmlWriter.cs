@@ -5,27 +5,28 @@ using System.Xml.Serialization;
 
 namespace LinkedInSearchUi.Indexing
 {
-    public class CustomXmlService
+    public class CustomXmlService<T>
     {
         private XmlSerializer _serializer;
+
         public CustomXmlService()
         {
-            _serializer = new XmlSerializer(typeof(List<Person>));
+            _serializer = new XmlSerializer(typeof(List<T>));
         }
 
 
-         public void WriteToFile(List<Person> people, string filePath)
+         public void WriteToFile(List<T> list, string filePath)
         {
             TextWriter tw = new StreamWriter(filePath);
-            _serializer.Serialize(tw, people);
+            _serializer.Serialize(tw, list);
         }
 
-        public List<Person> ReadFromFile(string filePath)
+        public List<T> ReadFromFile(string filePath)
         {
             StreamReader reader = new StreamReader(filePath);
-            List<Person> people = (List<Person>)_serializer.Deserialize(reader);
+            var list = (List<T>)_serializer.Deserialize(reader);
             reader.Close();
-            return people;
+            return list;
         }
 
     }

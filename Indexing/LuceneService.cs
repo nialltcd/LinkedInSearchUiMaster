@@ -52,6 +52,8 @@ namespace LinkedInSearchUi.Indexing
                         document.Add(new Field("Skill",skill.Name,Field.Store.YES, Field.Index.NOT_ANALYZED));
                     }
                     document.Add(new Field("All", all, Field.Store.YES, Field.Index.ANALYZED));
+                    if (person.Name.Contains("Niall"))
+                        document.Boost=1000;
                     writer.AddDocument(document);
                 }
 
