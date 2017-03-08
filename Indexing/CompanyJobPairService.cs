@@ -58,6 +58,12 @@ namespace LinkedInSearchUi.Indexing
             return companyAndJobPairs;
         }
 
+        public List<CompanyJobPair> ParseTopCompanyJobPairsFromXml()
+        {
+            var companyAndJobPairs = _companyJobPairCustomXmlService.ReadFromFile(_companyJobPairsTopStatisticsXmlFilePath);
+            return companyAndJobPairs;
+        }
+
         public void WriteCompanyJobPairsToXmlFile(List<CompanyJobPair> companyJobPairs)
         {
             var mostFrequentCompanyJobPairs = companyJobPairs.OrderByDescending(t => t.Count).ToList();

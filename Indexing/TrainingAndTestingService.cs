@@ -72,6 +72,15 @@ namespace LinkedInSearchUi.Indexing
 
         }
 
+        public void CreateTrainingAndTestingSetNewRequirements(List<Person> people)
+        {
+            _personCustomXmlService.WriteToFile(people, @"C:\Users\Niall\5th Year\Thesis\XML\training_set_new.xml");
+            people.Select(t => { t.Experiences = null; return t; }).ToList();
+            _personCustomXmlService.WriteToFile(people, @"C:\Users\Niall\5th Year\Thesis\XML\testing_set_new.xml");
+
+
+        }
+
 
         private List<Company> GenerateCompaniesWithCurrentEmployees(List<Person> people)
         {

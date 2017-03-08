@@ -53,7 +53,19 @@ namespace LinkedInSearchUi.Model
             return people;
         }
 
+        public List<Person> ParseTestingPeopleFromXml()
+        {
+            var people = _personCustomXmlService.ReadFromFile(@"C:\Users\Niall\5th Year\Thesis\XML\testing_set_new.xml");
+            _luceneService = new LuceneService(people);
+            return people;
+        }
 
+        public List<Person> ParseTrainingPeopleFromXml()
+        {
+            var people = _personCustomXmlService.ReadFromFile(@"C:\Users\Niall\5th Year\Thesis\XML\training_set_new.xml");
+            _luceneService = new LuceneService(people);
+            return people;
+        }
 
         public List<Company> GenerateCompanies(List<Person> people)
         {
@@ -93,6 +105,11 @@ namespace LinkedInSearchUi.Model
         {
             _trainingAndTestingService.CreateTrainingAndTestSetsBasedOnJob();
         }
+
+        public void CreateTrainingAndTestSetsNewRequirements(List<Person> people)
+        {
+            _trainingAndTestingService.CreateTrainingAndTestingSetNewRequirements(people);
+        }
         #endregion
 
         #region CompanyJobPairService
@@ -105,6 +122,11 @@ namespace LinkedInSearchUi.Model
         public List<CompanyJobPair> ParseCompanyJobPairsFromXml()
         {
             return _companyJobPairService.ParseCompanyJobPairsFromXml();
+        }
+
+        public List<CompanyJobPair> ParseTopCompanyJobPairsFromXml()
+        {
+            return _companyJobPairService.ParseTopCompanyJobPairsFromXml();
         }
 
         public void WriteCompanyJobPairsToXmlFile(List<CompanyJobPair> companyJobPairs)

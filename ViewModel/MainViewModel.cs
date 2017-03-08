@@ -24,69 +24,49 @@ namespace LinkedInSearchUi.ViewModel
     public class MainViewModel : ViewModelBase
     {
         private Model.Model _model;
-        private List<Person> _allPeople;
+        private SearchViewModel _searchViewModel;
+        private StatisticsViewModel _statisticsViewModel;
         /// <summary>
         /// Initializes a new instance of the MainViewModel class.
         /// </summary>
         public MainViewModel()
         {
             _model = new Model.Model();
-            //_allPeople = _model.ParseRawHtmlFilesFromDirectory();
-            //_allPeople = _model.ParsePeopleFromXml();
-            //_model.GenerateCompanies(_allPeople);
-            //var companyJobPairs = _model.GenerateCompanyJobPairs(_allPeople);
-            var companyJobPairs = _model.ParseCompanyJobPairsFromXml();
-
-            //_model.WriteCompanyJobPairsToXmlFile(companyJobPairs);
-            //_model.WriteCompanyJobPairsTopStatisticsToXmlFile(companyJobPairs);
-            //_model.WriteCompanyJobPairsTopStatisticsToFileFormatted(companyJobPairs);
-
-            //_model.CreateTrainingAndTestSetsBasedOnCompany();
-            //_model.CreateTrainingAndTestSetsBasedOnJob();
-            SearchData = new ObservableCollection<Person>(_allPeople);
+            _searchViewModel = new SearchViewModel();
+            _statisticsViewModel = new StatisticsViewModel();
+            CurrentView = _searchViewModel;
         }
 
-        private string _searchText;
-        public string SearchText
+        private ViewModelBase _currentView;
+        public ViewModelBase CurrentView
         {
-            get { return _searchText; }
-            set
-            {
-                _searchText = value;
+            get { return _currentView; }
+            set { _currentView = value;
                 RaisePropertyChanged();
             }
         }
+       
+        public ICommand OpenSearchConsole {  get { return new RelayCommand(OpenSearchConsoleAction, CanOpenSearchConsole); } }
 
-        private ObservableCollection<Person> _searchData; 
-        public ObservableCollection<Person> SearchData{
-            get{ return _searchData; }
-            set
-            {
-                _searchData = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public ICommand SearchButton { get {  return new RelayCommand(SearchAction,CanSearch);} }
-
-        private void SearchAction()
+        private void OpenSearchConsoleAction()
         {
-            SearchData = new ObservableCollection<Person>(_model.LuceneSearch(SearchText));
+            CurrentView = _searchViewModel;
         }
-        private bool CanSearch()
+        private bool CanOpenSearchConsole()
         {
-            return !string.IsNullOrEmpty(SearchText);
+            return true;
         }
 
-        public ICommand ResetButton { get { return new RelayCommand(ResetAction, CanReset); } }
+        public ICommand OpenStatisticsConsole { get { return new RelayCommand(OpenStatisticsConsoleAction, CanOpenStatisticsConsole); } }
 
-        private void ResetAction()
+        private void OpenStatisticsConsoleAction()
         {
-            SearchData = new ObservableCollection<Person>(_allPeople);
+            CurrentView = _statisticsViewModel;
         }
-        private bool CanReset()
+        private bool CanOpenStatisticsConsole()
         {
-            return _allPeople.Count != _searchData.Count;
+            return true;
         }
+
     }
 }

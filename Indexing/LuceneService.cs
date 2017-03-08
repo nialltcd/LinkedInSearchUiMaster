@@ -37,7 +37,7 @@ namespace LinkedInSearchUi.Indexing
                 foreach (Person person in people)
                 {
                     var document = new Document();
-
+                    document.Add(new Field("Id", person.Id.ToString(), Field.Store.YES, Field.Index.ANALYZED));
                     document.Add(new Field("Name", person.Name, Field.Store.YES, Field.Index.ANALYZED));
                     string all = person.Name;
                     foreach (var experience in person.Experiences)
@@ -52,8 +52,7 @@ namespace LinkedInSearchUi.Indexing
                         document.Add(new Field("Skill",skill.Name,Field.Store.YES, Field.Index.NOT_ANALYZED));
                     }
                     document.Add(new Field("All", all, Field.Store.YES, Field.Index.ANALYZED));
-                    if (person.Name.Contains("Niall"))
-                        document.Boost=1000;
+
                     writer.AddDocument(document);
                 }
 
@@ -93,7 +92,7 @@ namespace LinkedInSearchUi.Indexing
                         var person = new Person();
 
                         person.Name = doc.GetField("Name").StringValue;
-
+                        person.Id = int.Parse(doc.GetField("Id").StringValue);
                         person.Experiences = new List<Experience>();
                         var organisations = doc.GetFields("Organisation");
                         var durations = doc.GetFields("Duration");
