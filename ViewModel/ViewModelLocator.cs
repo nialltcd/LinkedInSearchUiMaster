@@ -14,7 +14,9 @@
 
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Ioc;
+using LinkedInSearchUi.DependencyInjection;
 using Microsoft.Practices.ServiceLocation;
+using Ninject;
 
 namespace LinkedInSearchUi.ViewModel
 {

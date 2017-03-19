@@ -5,12 +5,6 @@
                     xmlns:views="clr-namespace:LinkedInSearchUi.View"
                     >
 
-    <DataTemplate DataType="{x:Type viewModels:SearchViewModel}">
-        <views:SearchView/>
-    </DataTemplate>
 
-    <DataTemplate DataType="{x:Type viewModels:StatisticsViewModel}">
-        <views:StatisticsView/>
-    </DataTemplate>
 
 </ResourceDictionary>

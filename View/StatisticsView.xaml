@@ -16,9 +16,14 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-            <Expander Header="View Top Company Job Pairs Statistics">
-                <oxy:PlotView Model="{Binding TopCompanyJobPairsPlot}"/>
-            </Expander>
+            <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Vertical">
+                <Expander Header="View Top Company Job Pairs Statistics">
+                    <oxy:PlotView Model="{Binding TopCompanyJobPairsPlot}"/>
+                </Expander>
+                <Expander Header="View Profile Usefulness Overview Statistics">
+                    <oxy:PlotView Model="{Binding ProfileUsefulnessPlot}"/>
+                </Expander>
+            </StackPanel>
         </Grid>
     </ScrollViewer>
 </UserControl>

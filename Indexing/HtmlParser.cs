@@ -6,7 +6,7 @@ using System;
 
 namespace LinkedInSearchUi.Indexing
 {
-    public class HtmlParser
+    public class HtmlParser : IHtmlParser
     {
         public Person GeneratePersonFromHtmlDocument(HtmlDocument document)
         {

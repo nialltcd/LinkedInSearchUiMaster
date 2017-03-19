@@ -5,7 +5,7 @@ using System.Xml.Serialization;
 
 namespace LinkedInSearchUi.Indexing
 {
-    public class CustomXmlService<T>
+    public class CustomXmlService<T> : ICustomXmlWriter<T>
     {
         private XmlSerializer _serializer;
 

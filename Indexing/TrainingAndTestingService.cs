@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace LinkedInSearchUi.Indexing
 {
-    public class TrainingAndTestingService
+    public class TrainingAndTestingService : ITrainingAndTestingService
     {
         private CustomXmlService<Person> _personCustomXmlService;
 

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace LinkedInSearchUi.Indexing
 {
-    public class CompanyJobPairService
+    public class CompanyJobPairService : ICompanyJobPairService
     {
         private CustomXmlService<CompanyJobPair> _companyJobPairCustomXmlService;
         private string _allCompanyJobPairsXmlFilePath = @"C:\Users\Niall\5th Year\Thesis\XML\AllCompanyJobPairs.xml";

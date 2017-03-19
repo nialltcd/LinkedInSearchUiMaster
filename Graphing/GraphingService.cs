@@ -7,22 +7,23 @@ using LinkedInSearchUi.Model;
 using OxyPlot;
 using OxyPlot.Series;
 using OxyPlot.Axes;
+using LinkedInSearchUi.DataTypes;
 
 namespace LinkedInSearchUi.Graphing
 {
-    public class GraphingService
+    public class GraphingService : IGraphingService
     {
-        private readonly Model.Model _model;
-        public GraphingService()
+        private readonly IModel _model;
+        public GraphingService(IModel model)
         {
-            _model = new Model.Model();
+            _model = model;
         }
 
         public PlotModel GenerateTopCompanyJobPairs()
         {
             var plot = new PlotModel { Title = "Top Company Job Pairs" };
 
-            var topCompanyJobPairs = _model.ParseTopCompanyJobPairsFromXml();
+            var topCompanyJobPairs = _model.GetCompanyJobPairs();
 
             List<BarItem> barItems = new List<BarItem>();
             List<string> axis = new List<string>();
@@ -48,7 +49,32 @@ namespace LinkedInSearchUi.Graphing
             });
 
             return plot;
+        }
 
+        public PlotModel GenerateUsefulProfilePieChart()
+        {            
+            int useful=0;
+            int notUseful=0;
+
+            var people = _model.GetPeople();
+
+            foreach (var person in people)
+            {
+                if (person.Experiences.Count == 0)
+                    notUseful++;
+                else
+                    useful++;
+            }
+            var model = new PlotModel { Title = "Profile Overview" };
+
+            dynamic seriesP1 = new PieSeries { StrokeThickness = 2.0, InsideLabelPosition = 0.8, AngleSpan = 360, StartAngle = 0 };
+
+            seriesP1.Slices.Add(new PieSlice("Useful Profiles", useful) { IsExploded = false, Fill = OxyColors.PaleVioletRed });
+            seriesP1.Slices.Add(new PieSlice("Un-Useful Profiles", notUseful) { IsExploded = true });
+
+
+            model.Series.Add(seriesP1);
+            return model;
         }
     }
 }

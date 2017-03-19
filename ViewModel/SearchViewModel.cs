@@ -1,6 +1,7 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using LinkedInSearchUi.DataTypes;
+using LinkedInSearchUi.Model;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -11,19 +12,19 @@ using System.Windows.Input;
 
 namespace LinkedInSearchUi.ViewModel
 {
-    public class SearchViewModel : ViewModelBase
+    public class SearchViewModel : ViewModelBase, ISearchViewModel
     {
-        private Model.Model _model;
+        private IModel _model;
         private List<Person> _allPeople;
         /// <summary>
         /// Initializes a new instance of the SearchViewModel class.
         /// </summary>
-        public SearchViewModel()
+        public SearchViewModel(IModel model)
         {
-            _model = new Model.Model();
+            _model = model;
             //_allPeople = _model.ParseRawHtmlFilesFromDirectory();
-            _allPeople = _model.ParseTrainingPeopleFromXml();
-            //_allPeople = new List<Person>();
+            _allPeople = _model.GetPeople();
+            _allPeople = new List<Person>();
             //_model.GenerateCompanies(_allPeople);
             //var companyJobPairs = _model.GenerateCompanyJobPairs(_allPeople);
             //var companyJobPairs = _model.ParseCompanyJobPairsFromXml();

@@ -10,23 +10,37 @@ using System.Text;
 
 namespace LinkedInSearchUi.Model
 {
-    public class Model
+    public class Model : IModel
     {
-        private HtmlParser _parser;
-        private LuceneService _luceneService;
-        private TrainingAndTestingService _trainingAndTestingService;
-        private CompanyJobPairService _companyJobPairService;
+        private IHtmlParser _parser;
+        private ILuceneService _luceneService;
+        private ITrainingAndTestingService _trainingAndTestingService;
+        private ICompanyJobPairService _companyJobPairService;
         private CustomXmlService<Person> _personCustomXmlService;
+        private readonly List<Person> _people;
+        private readonly List<CompanyJobPair> _companyJobPairs;
 
-        public Model()
+        public Model(IHtmlParser htmlParser, ITrainingAndTestingService trainingAndTestingService, ICompanyJobPairService companyJobPairService)
         {
             _personCustomXmlService = new CustomXmlService<Person>();
-            _parser = new HtmlParser();
-            _trainingAndTestingService = new TrainingAndTestingService();
-            _companyJobPairService = new CompanyJobPairService();
+            _parser = htmlParser;
+            _trainingAndTestingService = trainingAndTestingService;
+            _companyJobPairService = companyJobPairService;
+            _people = ParsePeopleFromXml();
+            _companyJobPairs = _companyJobPairService.ParseTopCompanyJobPairsFromXml();
         }
 
-        public List<Person> ParseRawHtmlFilesFromDirectory()
+        public List<Person> GetPeople()
+        {
+            return _people;
+        }
+
+        public List<CompanyJobPair> GetCompanyJobPairs()
+        {
+            return _companyJobPairs;
+        }
+
+        private List<Person> ParseRawHtmlFilesFromDirectory()
         {
             List<Person> people = new List<Person>();
             var document = new HtmlDocument();
@@ -46,21 +60,21 @@ namespace LinkedInSearchUi.Model
             return people;
         }
 
-        public List<Person> ParsePeopleFromXml()
+        private List<Person> ParsePeopleFromXml()
         {
             var people = _personCustomXmlService.ReadFromFile(@"C:\Users\Niall\5th Year\Thesis\XML\all_people.xml");
             _luceneService = new LuceneService(people);
             return people;
         }
 
-        public List<Person> ParseTestingPeopleFromXml()
+        private List<Person> ParseTestingPeopleFromXml()
         {
             var people = _personCustomXmlService.ReadFromFile(@"C:\Users\Niall\5th Year\Thesis\XML\testing_set_new.xml");
             _luceneService = new LuceneService(people);
             return people;
         }
 
-        public List<Person> ParseTrainingPeopleFromXml()
+        private List<Person> ParseTrainingPeopleFromXml()
         {
             var people = _personCustomXmlService.ReadFromFile(@"C:\Users\Niall\5th Year\Thesis\XML\training_set_new.xml");
             _luceneService = new LuceneService(people);

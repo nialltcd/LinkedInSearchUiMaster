@@ -21,20 +21,21 @@ namespace LinkedInSearchUi.ViewModel
     /// See http://www.galasoft.ch/mvvm
     /// </para>
     /// </summary>
-    public class MainViewModel : ViewModelBase
+    public class MainViewModel : ViewModelBase, IMainViewModel
     {
-        private Model.Model _model;
-        private SearchViewModel _searchViewModel;
-        private StatisticsViewModel _statisticsViewModel;
+        private IModel _model;
+        private ISearchViewModel _searchViewModel;
+        private IStatisticsViewModel _statisticsViewModel;
         /// <summary>
         /// Initializes a new instance of the MainViewModel class.
         /// </summary>
-        public MainViewModel()
+        public MainViewModel(IModel model, ISearchViewModel searchViewModel, 
+            IStatisticsViewModel statisticsViewModel)
         {
-            _model = new Model.Model();
-            _searchViewModel = new SearchViewModel();
-            _statisticsViewModel = new StatisticsViewModel();
-            CurrentView = _searchViewModel;
+            _model = model;
+            _searchViewModel = searchViewModel;
+            _statisticsViewModel = statisticsViewModel;
+            CurrentView = _searchViewModel as ViewModelBase;
         }
 
         private ViewModelBase _currentView;
@@ -50,7 +51,7 @@ namespace LinkedInSearchUi.ViewModel
 
         private void OpenSearchConsoleAction()
         {
-            CurrentView = _searchViewModel;
+            CurrentView = _searchViewModel as ViewModelBase;
         }
         private bool CanOpenSearchConsole()
         {
@@ -61,7 +62,7 @@ namespace LinkedInSearchUi.ViewModel
 
         private void OpenStatisticsConsoleAction()
         {
-            CurrentView = _statisticsViewModel;
+            CurrentView = _statisticsViewModel as ViewModelBase;
         }
         private bool CanOpenStatisticsConsole()
         {

@@ -9,31 +9,34 @@ using System.Threading.Tasks;
 
 namespace LinkedInSearchUi.ViewModel
 {
-    public class StatisticsViewModel : ViewModelBase
+    public class StatisticsViewModel : ViewModelBase, IStatisticsViewModel
     {
-        private GraphingService _graphingService;
-        public StatisticsViewModel()
+        private IGraphingService _graphingService;
+        public StatisticsViewModel(IGraphingService graphingService)
         {
-            _graphingService = new GraphingService();
+            _graphingService = graphingService;
             TopCompanyJobPairsPlot = _graphingService.GenerateTopCompanyJobPairs();
+            ProfileUsefulnessPlot = _graphingService.GenerateUsefulProfilePieChart();
         }
 
-        public string Title { get; private set; }
-
-        private IList<DataPoint> _points;
-        public IList<DataPoint> Points
+        private PlotModel _topCompanyJobPairs;
+        public PlotModel TopCompanyJobPairsPlot
         {
-            get { return _points; }
-            private set
-            {
-                _points = value;
+            get { return _topCompanyJobPairs; }
+            set {
+                _topCompanyJobPairs = value;
                 RaisePropertyChanged();
             }
         }
-
-        public PlotModel TopCompanyJobPairsPlot
+        private PlotModel _profileUsefulnessPlot;
+        public PlotModel ProfileUsefulnessPlot
         {
-            get;set;
+            get { return _profileUsefulnessPlot; }
+            set
+            {
+                _profileUsefulnessPlot = value;
+                RaisePropertyChanged();
+            }
         }
     }
 }

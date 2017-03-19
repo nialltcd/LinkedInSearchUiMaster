@@ -11,16 +11,12 @@
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary 
+                <!--<ResourceDictionary 
                   Source="Resources/ViewToViewModelMapper.xaml">
-                </ResourceDictionary>
+                </ResourceDictionary>-->
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
-    </Window.Resources>
-    <Window.DataContext>
-        <viewModel:MainViewModel/>
-    </Window.DataContext>
-    
+    </Window.Resources>    
     <Border BorderBrush="Black" BorderThickness="5">
         <Grid>
             <Grid.RowDefinitions>

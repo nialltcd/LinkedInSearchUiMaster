@@ -12,7 +12,7 @@ using Lucene.Net.Util;
 
 namespace LinkedInSearchUi.Indexing
 {
-    public class LuceneService
+    public class LuceneService : ILuceneService
     {
         // Note there are many different types of Analyzer that may be used with Lucene, the exact one you use
         // will depend on your requirements
