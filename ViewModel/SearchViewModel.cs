@@ -24,7 +24,6 @@ namespace LinkedInSearchUi.ViewModel
             _model = model;
             //_allPeople = _model.ParseRawHtmlFilesFromDirectory();
             _allPeople = _model.GetPeople();
-            _allPeople = new List<Person>();
             //_model.GenerateCompanies(_allPeople);
             //var companyJobPairs = _model.GenerateCompanyJobPairs(_allPeople);
             //var companyJobPairs = _model.ParseCompanyJobPairsFromXml();

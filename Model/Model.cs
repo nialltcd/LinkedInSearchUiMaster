@@ -19,15 +19,25 @@ namespace LinkedInSearchUi.Model
         private CustomXmlService<Person> _personCustomXmlService;
         private readonly List<Person> _people;
         private readonly List<CompanyJobPair> _companyJobPairs;
+        private readonly List<JobStat> _topJobStats;
+        private readonly List<CompanyStat> _topCompanyStats;
+        private readonly IJobService _jobService;
+        private readonly ICompanyService _companyService;
 
-        public Model(IHtmlParser htmlParser, ITrainingAndTestingService trainingAndTestingService, ICompanyJobPairService companyJobPairService)
+        public Model(IHtmlParser htmlParser, ITrainingAndTestingService trainingAndTestingService, ICompanyService companyService, IJobService jobService, ICompanyJobPairService companyJobPairService)
         {
             _personCustomXmlService = new CustomXmlService<Person>();
             _parser = htmlParser;
             _trainingAndTestingService = trainingAndTestingService;
             _companyJobPairService = companyJobPairService;
-            _people = ParsePeopleFromXml();
+            _jobService = jobService;
+            _companyService = companyService;
+            _people = ParseRawHtmlFilesFromDirectory();
+            _personCustomXmlService.WriteToFile(_people, @"C:\Users\Niall\5th Year\Thesis\XML\AllPeopleUpdated.xml");
+            //_trainingAndTestingService.CreateTrainingAndTestingSetBasedOnSingleJob(_people);
             _companyJobPairs = _companyJobPairService.ParseTopCompanyJobPairsFromXml();
+            _topJobStats = _jobService.ParseTopJobStatsFromXml();
+            _topCompanyStats = _companyService.ParseTopCompanyStatsFromXml();
         }
 
         public List<Person> GetPeople()
@@ -40,16 +50,29 @@ namespace LinkedInSearchUi.Model
             return _companyJobPairs;
         }
 
+        public List<JobStat> GetTopJobStats()
+        {
+            return _topJobStats;
+        }
+
+        public List<CompanyStat> GetTopCompanyStats()
+        {
+            return _topCompanyStats;
+        }
+
         private List<Person> ParseRawHtmlFilesFromDirectory()
         {
             List<Person> people = new List<Person>();
             var document = new HtmlDocument();
+            int idCount = 0;
             foreach (var file in Directory.EnumerateFiles(@"C:\Users\Niall\Documents\Visual Studio 2015\Projects\LinkedInSearchUi\LinkedIn Dataset\SmallLinkedInDataSet", "*.html"))
             {
                 try
                 {
                     document.Load(file);
-                    people.Add(_parser.GeneratePersonFromHtmlDocument(document));
+                    var person = _parser.GeneratePersonFromHtmlDocument(document);
+                    person.Id = idCount++;
+                    people.Add(person);
                     if (people.Count % 1000 == 0)
                         Console.WriteLine(people.Count);
                 }
@@ -159,5 +182,28 @@ namespace LinkedInSearchUi.Model
         }
         #endregion
 
+        #region Job Statistics
+        public List<JobStat> ParseJobStatsFromXml()
+        {
+            return _jobService.ParseJobStatsFromXml();
+        }
+
+        public List<JobStat> ParseTopJobStatsFromXml()
+        {
+            return _jobService.ParseTopJobStatsFromXml();
+        }
+        #endregion
+
+        #region Company Statistics
+        public List<CompanyStat> ParseCompanyStatsFromXml()
+        {
+            return _companyService.ParseCompanyStatsFromXml();
+        }
+
+        public List<CompanyStat> ParseTopCompanyStatsFromXml()
+        {
+            return _companyService.ParseTopCompanyStatsFromXml();
+        }
+        #endregion
     }
 }

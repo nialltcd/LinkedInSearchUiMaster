@@ -11,6 +11,8 @@ namespace LinkedInSearchUi.Model
     {
         List<Person> GetPeople();
         List<CompanyJobPair> GetCompanyJobPairs();
+        List<JobStat> GetTopJobStats();
+        List<CompanyStat> GetTopCompanyStats();
         List<Company> GenerateCompanies(List<Person> people);
         List<Person> LuceneSearch(string textSearch);
         void CreateTrainingAndTestSetsBasedOnCompany();
@@ -22,5 +24,9 @@ namespace LinkedInSearchUi.Model
         void WriteCompanyJobPairsToXmlFile(List<CompanyJobPair> companyJobPairs);
         void WriteCompanyJobPairsTopStatisticsToXmlFile(List<CompanyJobPair> companyJobPairs);
         void WriteCompanyJobPairsTopStatisticsToFileFormatted(List<CompanyJobPair> companyJobPairs);
+        List<JobStat> ParseJobStatsFromXml();
+        List<JobStat> ParseTopJobStatsFromXml();
+        List<CompanyStat> ParseCompanyStatsFromXml();
+        List<CompanyStat> ParseTopCompanyStatsFromXml();
     }
 }

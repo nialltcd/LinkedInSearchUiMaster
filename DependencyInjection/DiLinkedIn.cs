@@ -26,6 +26,9 @@ namespace LinkedInSearchUi.DependencyInjection
             Bind<IHtmlParser>().To<HtmlParser>();
             Bind<ITrainingAndTestingService>().To<TrainingAndTestingService>();
             Bind<ICompanyJobPairService>().To<CompanyJobPairService>();
+            Bind<IJobService>().To<JobService>();
+            Bind<ICompanyService>().To<CompanyService>();
+
         }
     }
 }

@@ -51,6 +51,70 @@ namespace LinkedInSearchUi.Graphing
             return plot;
         }
 
+        public PlotModel GenerateTopJobStats()
+        {
+            var plot = new PlotModel { Title = "Top Job Statistics" };
+
+            var topJobStats = _model.GetTopJobStats();
+
+            List<BarItem> barItems = new List<BarItem>();
+            List<string> axis = new List<string>();
+            foreach (var jobStat in topJobStats.Take(30))
+            {
+                barItems.Add(new BarItem { Value = jobStat.Count });
+                axis.Add(jobStat.JobName);
+            }
+            var barSeries = new BarSeries
+            {
+                ItemsSource = barItems,
+                LabelPlacement = LabelPlacement.Inside,
+                LabelFormatString = "{0:.00}"
+            };
+
+            plot.Series.Add(barSeries);
+
+            plot.Axes.Add(new CategoryAxis
+            {
+                Position = AxisPosition.Left,
+                Key = "Job Name",
+                ItemsSource = axis
+            });
+
+            return plot;
+        }
+
+        public PlotModel GenerateTopCompanyStats()
+        {
+            var plot = new PlotModel { Title = "Top Company Statistics" };
+
+            var topCompanyStats = _model.GetTopCompanyStats();
+
+            List<BarItem> barItems = new List<BarItem>();
+            List<string> axis = new List<string>();
+            foreach (var companyStat in topCompanyStats.Take(30))
+            {
+                barItems.Add(new BarItem { Value = companyStat.Count });
+                axis.Add(companyStat.CompanyName);
+            }
+            var barSeries = new BarSeries
+            {
+                ItemsSource = barItems,
+                LabelPlacement = LabelPlacement.Inside,
+                LabelFormatString = "{0:.00}"
+            };
+
+            plot.Series.Add(barSeries);
+
+            plot.Axes.Add(new CategoryAxis
+            {
+                Position = AxisPosition.Left,
+                Key = "Company Name",
+                ItemsSource = axis
+            });
+
+            return plot;
+        }
+
         public PlotModel GenerateUsefulProfilePieChart()
         {            
             int useful=0;
@@ -71,7 +135,6 @@ namespace LinkedInSearchUi.Graphing
 
             seriesP1.Slices.Add(new PieSlice("Useful Profiles", useful) { IsExploded = false, Fill = OxyColors.PaleVioletRed });
             seriesP1.Slices.Add(new PieSlice("Un-Useful Profiles", notUseful) { IsExploded = true });
-
 
             model.Series.Add(seriesP1);
             return model;

@@ -10,20 +10,26 @@
     <ScrollViewer>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-            <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Vertical">
-                <Expander Header="View Top Company Job Pairs Statistics">
-                    <oxy:PlotView Model="{Binding TopCompanyJobPairsPlot}"/>
-                </Expander>
-                <Expander Header="View Profile Usefulness Overview Statistics">
-                    <oxy:PlotView Model="{Binding ProfileUsefulnessPlot}"/>
-                </Expander>
-            </StackPanel>
+        <TabControl>
+            <TabItem Header="Top Company Job Pairs">
+                <oxy:PlotView Model="{Binding TopCompanyJobPairsPlot}"/>
+            </TabItem>
+            <TabItem Header="Top Job Statistics" >
+                <oxy:PlotView Model="{Binding TopJobStatsPlot}"/>
+            </TabItem>
+            <TabItem Header="Top Company Statistics" >
+                <oxy:PlotView Model="{Binding TopCompanyStatsPlot}"/>
+            </TabItem>
+            <TabItem Header="Plot Usefulness Pie Chart" >
+                <oxy:PlotView Model="{Binding ProfileUsefulnessPlot}"/>
+            </TabItem>
+            </TabControl>
         </Grid>
     </ScrollViewer>
 </UserControl>

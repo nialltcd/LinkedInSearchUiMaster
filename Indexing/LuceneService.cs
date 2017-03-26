@@ -39,15 +39,27 @@ namespace LinkedInSearchUi.Indexing
                     var document = new Document();
                     document.Add(new Field("Id", person.Id.ToString(), Field.Store.YES, Field.Index.ANALYZED));
                     document.Add(new Field("Name", person.Name, Field.Store.YES, Field.Index.ANALYZED));
+                    document.Add(new Field("NumberOfConnections", person.NumberOfConnections.ToString(), Field.Store.YES, Field.Index.ANALYZED));
+                    document.Add(new Field("WorkExperienceInMonths", person.WorkExperienceInMonths.ToString(), Field.Store.YES, Field.Index.ANALYZED));
+
+
                     string all = person.Name;
                     foreach (var experience in person.Experiences)
                     {
                         document.Add(new Field("Organisation", experience.Organisation, Field.Store.YES, Field.Index.NOT_ANALYZED));
                         document.Add(new Field("Role", experience.Role, Field.Store.YES, Field.Index.NOT_ANALYZED));
                         document.Add(new Field("Duration", experience.Duration, Field.Store.YES, Field.Index.NOT_ANALYZED));
+                        document.Add(new Field("DurationInMonths", experience.DurationInMonths.ToString(), Field.Store.YES, Field.Index.NOT_ANALYZED));
+
                         all += " "+experience.Organisation +" "+ experience.Role+" ";
                     }
-                    foreach(var skill in person.Skills)
+                    foreach (var education in person.Education)
+                    {
+                        document.Add(new Field("Institute", education.Institute, Field.Store.YES, Field.Index.NOT_ANALYZED));
+                        document.Add(new Field("Degree", education.Degree, Field.Store.YES, Field.Index.NOT_ANALYZED));
+                        all += " " + education.Institute + " " + education.Degree + " ";
+                    }
+                    foreach (var skill in person.Skills)
                     {
                         document.Add(new Field("Skill",skill.Name,Field.Store.YES, Field.Index.NOT_ANALYZED));
                     }
@@ -93,9 +105,12 @@ namespace LinkedInSearchUi.Indexing
 
                         person.Name = doc.GetField("Name").StringValue;
                         person.Id = int.Parse(doc.GetField("Id").StringValue);
+                        person.NumberOfConnections = int.Parse(doc.GetField("NumberOfConnections").StringValue);
+                        person.WorkExperienceInMonths = int.Parse(doc.GetField("WorkExperienceInMonths").StringValue);
                         person.Experiences = new List<Experience>();
                         var organisations = doc.GetFields("Organisation");
                         var durations = doc.GetFields("Duration");
+                        var durationsInMonths = doc.GetFields("DurationInMonths");
                         var roles = doc.GetFields("Role");
                         for(int i=0;i<organisations.Length;i++)
                         {
@@ -103,7 +118,19 @@ namespace LinkedInSearchUi.Indexing
                             {
                                 Organisation = organisations[i].StringValue,
                                 Role = roles[i].StringValue,
-                                Duration = durations[i].StringValue
+                                Duration = durations[i].StringValue,
+                                DurationInMonths = int.Parse(durationsInMonths[i].StringValue)
+                            });
+                        }
+                        person.Education = new List<Education>();
+                        var institutes = doc.GetFields("Institute");
+                        var degrees = doc.GetFields("Degree");
+                        for (int i = 0; i < institutes.Length; i++)
+                        {
+                            person.Education.Add(new Education()
+                            {
+                                Institute = institutes[i].StringValue,
+                                Degree = degrees[i].StringValue
                             });
                         }
                         person.Skills = new List<Skill>();

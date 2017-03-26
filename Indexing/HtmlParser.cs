@@ -3,6 +3,7 @@ using System.Linq;
 using HtmlAgilityPack;
 using LinkedInSearchUi.DataTypes;
 using System;
+using System.Text.RegularExpressions;
 
 namespace LinkedInSearchUi.Indexing
 {
@@ -13,23 +14,48 @@ namespace LinkedInSearchUi.Indexing
 
             //Retrieve the person's name from the document
             var personName = GetPersonsName(document);
+            int numberOfConnections = 0;
+            try
+            {
+                numberOfConnections = GetNumberOfConnections(document);
+            }catch (Exception connectionException) { }
 
             var experiences = new List<Experience>();
             var skills = new List<Skill>();
+            int workExperienceInMonths = 0;
             try
             {
                 //Retrieve the persons prior experience from the document
                 experiences = GetPersonsExperience(document);
+                foreach (var experience in experiences)
+                {
+                    workExperienceInMonths += experience.DurationInMonths;
+                }
             }
             catch (Exception experienceException) { }
+            var education = new List<Education>();
+            try
+            {
+                //Retrieve the persons prior experience from the document
+                education = GetPersonsEducation(document);
+            }
+            catch(Exception educationException) { }
             try
             {
                 //Retrieve the persons prior experience from the document
                 skills = GetPersonsSkills(document);
             }
             catch (Exception skillException) { }
-            return new Person() { Name = personName, Experiences = experiences, Skills= skills };
+            return new Person() { Name = personName, NumberOfConnections=numberOfConnections, WorkExperienceInMonths = workExperienceInMonths, Experiences = experiences, Skills= skills, Education=education };
 
+        }
+
+        private int GetNumberOfConnections(HtmlDocument document)
+        {
+            var firstOrDefault = document.DocumentNode.SelectNodes("//dd[@class='overview-connections']/p/strong").FirstOrDefault();
+            if (firstOrDefault != null)
+                return int.Parse(new string(firstOrDefault.InnerText.Where(c => char.IsDigit(c)).ToArray()));
+            return 0;
         }
 
         private string GetPersonsName(HtmlDocument document)
@@ -54,9 +80,51 @@ namespace LinkedInSearchUi.Indexing
                 experience.Role = node.SelectSingleNode(".  //div[@class='postitle'] //span[@class='title']").InnerText;
                 experience.Organisation = node.SelectSingleNode(".//div[@class='postitle'] //span[@class='org summary']").InnerText;
                 experience.Duration = node.SelectSingleNode(".//span[@class='duration']").InnerText;
+                experience.DurationInMonths = ConvertToMonths(experience.Duration);
                 experiences.Add(experience);
             }
             return experiences;
+        }
+
+        private int ConvertToMonths(string duration)
+        {
+            var yearMonthRegex = new Regex(@"\((\d+)\syears?\s(\d+)\smonths?\)");
+            var yearRegex = new Regex(@"\((\d+)\syears?\)");
+            var monthRegex = new Regex(@"\((\d+)\smonths?\)");
+
+            Match match = yearRegex.Match(duration);
+
+            if (match.Success)
+            {
+                return int.Parse(match.Groups[1].Value)*12;
+            }
+            match = monthRegex.Match(duration);
+            if (match.Success)
+            {
+                return int.Parse(match.Groups[1].Value);
+            }
+            match = yearMonthRegex.Match(duration);
+            if (match.Success)
+            {
+                return (int.Parse(match.Groups[1].Value) * 12) + int.Parse(match.Groups[2].Value);
+            }
+            return 0;
+        }
+
+        private List<Education> GetPersonsEducation(HtmlDocument document)
+        {
+            List<Education> educationList = new List<Education>();
+            var educationNode = document.DocumentNode.SelectNodes("//div[@id='profile-education'] //div[@class='content vcalendar']/div");
+            if (educationNode == null) return new List<Education>();
+
+            foreach (var node in educationNode)
+            {
+                var education = new Education();
+                education.Institute = node.SelectSingleNode(".//*[@class='summary fn org']/a").InnerText;
+                education.Degree = node.SelectSingleNode(".//*[@class='degree']").InnerText;
+                educationList.Add(education);
+            }
+            return educationList;
         }
 
         private List<Skill> GetPersonsSkills(HtmlDocument document)

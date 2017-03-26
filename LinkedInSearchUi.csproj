@@ -101,18 +101,24 @@
     </ApplicationDefinition>
     <Compile Include="DataTypes\Company.cs" />
     <Compile Include="DataTypes\CompanyJobPair.cs" />
+    <Compile Include="DataTypes\CompanyStat.cs" />
     <Compile Include="DataTypes\Education.cs" />
     <Compile Include="DataTypes\Job.cs" />
+    <Compile Include="DataTypes\JobStat.cs" />
     <Compile Include="DataTypes\Skill.cs" />
     <Compile Include="DependencyInjection\DiLinkedIn.cs" />
     <Compile Include="Graphing\GraphingService.cs" />
     <Compile Include="Graphing\IGraphingService.cs" />
     <Compile Include="Indexing\CompanyJobPairService.cs" />
+    <Compile Include="Indexing\CompanyService.cs" />
     <Compile Include="Indexing\ICompanyJobPairService.cs" />
+    <Compile Include="Indexing\ICompanyService.cs" />
     <Compile Include="Indexing\ICustomXmlWriter.cs" />
     <Compile Include="Indexing\IHtmlParser.cs" />
+    <Compile Include="Indexing\IJobService.cs" />
     <Compile Include="Indexing\ILuceneService.cs" />
     <Compile Include="Indexing\ITrainingAndTestingService.cs" />
+    <Compile Include="Indexing\JobService.cs" />
     <Compile Include="Indexing\TrainingAndTestingService.cs" />
     <Compile Include="Model\IModel.cs" />
     <Compile Include="Resources\IocContainer.cs" />

@@ -117,5 +117,50 @@ namespace LinkedInSearchUi.Indexing
             }
             return jobs;
         }
+
+        public void CreateTrainingAndTestingSetBasedOnSingleJob(List<Person> people)
+        {
+            //Get Most popular job and all employees who have that job
+            var jobs = GenerateJobsWithCurrentEmployees(people).OrderByDescending(t=>t.Employees.Count);
+            var mostPopularJob = jobs.FirstOrDefault();
+
+            //Split these employees into a training and testing set
+            var employeesWithMostPopularJobTraining = mostPopularJob.Employees.GetRange(0,(mostPopularJob.Employees.Count/2)-1);
+            var employeesWithMostPopularJobTesting = mostPopularJob.Employees.GetRange(mostPopularJob.Employees.Count / 2, mostPopularJob.Employees.Count-1);
+
+            //Remove this most popular job from the list of jobs
+            jobs.ToList().RemoveAt(0);
+
+            //Randomise the list
+            var rnd = new Random();
+            var randomJobs = jobs.OrderBy(item => rnd.Next()).ToList();
+
+            //Select an equal number of employees that do not have the most popular job for the training set
+            var randomTrainingJobs = randomJobs.GetRange(0, mostPopularJob.Employees.Count / 2);
+            List<Person> randomTrainingEmployees = new List<Person>();
+            foreach (var job in randomTrainingJobs)
+            {
+                randomTrainingEmployees.Add(job.Employees.FirstOrDefault());
+            }
+
+            //Select an equal number of employees that do not have the most popular job for the testing set
+            var randomTestingJobs = randomJobs.GetRange(mostPopularJob.Employees.Count / 2, mostPopularJob.Employees.Count);
+            List<Person> randomTestingEmployees = new List<Person>();
+            foreach (var job in randomTestingJobs)
+            {
+                randomTestingEmployees.Add(job.Employees.FirstOrDefault());
+            }
+
+            //Write new training set to XML file
+            var trainingSetFinal = employeesWithMostPopularJobTraining.Concat(randomTrainingEmployees).ToList();
+            _personCustomXmlService.WriteToFile(trainingSetFinal, @"U:\5th Year\Thesis\LinkedIn\XML\TrainingSetMostPopularJob.xml");
+
+            //Write new testing set to XML file
+            var testingSetFinal = employeesWithMostPopularJobTesting.Concat(randomTestingEmployees).ToList();
+            testingSetFinal.Select(t => t.Experiences = new List<Experience>());
+            _personCustomXmlService.WriteToFile(trainingSetFinal, @"U:\5th Year\Thesis\LinkedIn\XML\TestingSetMostPopularJob.xml");
+
+        }
+
     }
 }
