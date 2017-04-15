@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace LinkedInSearchUi.DataTypes
 {
-    public class JobStat
+    public class SkillStat
     {
-        public string JobName { get; set; }
-        public List<Person> Employees { get; set; }
+        public string Name { get; set; }
+        public int Count { get; set; }
     }
 }

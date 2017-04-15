@@ -118,15 +118,15 @@ namespace LinkedInSearchUi.Indexing
             return jobs;
         }
 
-        public void CreateTrainingAndTestingSetBasedOnSingleJob(List<Person> people)
+        public void CreateTrainingAndTestingSetBasedOnSingleJob(List<JobStat> jobStats)
         {
             //Get Most popular job and all employees who have that job
-            var jobs = GenerateJobsWithCurrentEmployees(people).OrderByDescending(t=>t.Employees.Count);
+            var jobs = jobStats.OrderByDescending(t => t.Employees.Count);
             var mostPopularJob = jobs.FirstOrDefault();
 
             //Split these employees into a training and testing set
-            var employeesWithMostPopularJobTraining = mostPopularJob.Employees.GetRange(0,(mostPopularJob.Employees.Count/2)-1);
-            var employeesWithMostPopularJobTesting = mostPopularJob.Employees.GetRange(mostPopularJob.Employees.Count / 2, mostPopularJob.Employees.Count-1);
+            var employeesWithMostPopularJobTraining = mostPopularJob.Employees.GetRange(0, (mostPopularJob.Employees.Count / 2) - 1);
+            var employeesWithMostPopularJobTesting = mostPopularJob.Employees.GetRange((mostPopularJob.Employees.Count / 2), mostPopularJob.Employees.Count / 2);
 
             //Remove this most popular job from the list of jobs
             jobs.ToList().RemoveAt(0);
@@ -153,12 +153,12 @@ namespace LinkedInSearchUi.Indexing
 
             //Write new training set to XML file
             var trainingSetFinal = employeesWithMostPopularJobTraining.Concat(randomTrainingEmployees).ToList();
-            _personCustomXmlService.WriteToFile(trainingSetFinal, @"U:\5th Year\Thesis\LinkedIn\XML\TrainingSetMostPopularJob.xml");
+            _personCustomXmlService.WriteToFile(trainingSetFinal, @"C:\Users\Niall\5th Year\Thesis\XML\TrainingSetMostPopularJob.xml");
 
             //Write new testing set to XML file
             var testingSetFinal = employeesWithMostPopularJobTesting.Concat(randomTestingEmployees).ToList();
             testingSetFinal.Select(t => t.Experiences = new List<Experience>());
-            _personCustomXmlService.WriteToFile(trainingSetFinal, @"U:\5th Year\Thesis\LinkedIn\XML\TestingSetMostPopularJob.xml");
+            _personCustomXmlService.WriteToFile(trainingSetFinal, @"C:\Users\Niall\5th Year\Thesis\XML\TestingSetMostPopularJob.xml");
 
         }
 

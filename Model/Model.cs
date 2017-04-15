@@ -7,6 +7,7 @@ using LinkedInSearchUi.Indexing;
 using System;
 using System.Linq;
 using System.Text;
+using LinkedInSearchUi.KMeansInfrastructure;
 
 namespace LinkedInSearchUi.Model
 {
@@ -21,10 +22,14 @@ namespace LinkedInSearchUi.Model
         private readonly List<CompanyJobPair> _companyJobPairs;
         private readonly List<JobStat> _topJobStats;
         private readonly List<CompanyStat> _topCompanyStats;
+        private readonly List<SkillStat> _topSkillStats;
         private readonly IJobService _jobService;
         private readonly ICompanyService _companyService;
+        private readonly ISkillService _skillService;
+        private readonly IKmeansService _kMeansService;
 
-        public Model(IHtmlParser htmlParser, ITrainingAndTestingService trainingAndTestingService, ICompanyService companyService, IJobService jobService, ICompanyJobPairService companyJobPairService)
+
+        public Model(IHtmlParser htmlParser, ITrainingAndTestingService trainingAndTestingService, ICompanyService companyService, IJobService jobService, ICompanyJobPairService companyJobPairService, ISkillService skillService, IKmeansService kMeansService)
         {
             _personCustomXmlService = new CustomXmlService<Person>();
             _parser = htmlParser;
@@ -32,12 +37,23 @@ namespace LinkedInSearchUi.Model
             _companyJobPairService = companyJobPairService;
             _jobService = jobService;
             _companyService = companyService;
-            _people = ParseRawHtmlFilesFromDirectory();
-            _personCustomXmlService.WriteToFile(_people, @"C:\Users\Niall\5th Year\Thesis\XML\AllPeopleUpdated.xml");
-            //_trainingAndTestingService.CreateTrainingAndTestingSetBasedOnSingleJob(_people);
+            _kMeansService = kMeansService;
+            _people = ParseTrainingPeopleTopJobFromXml();
+            //_personCustomXmlService.WriteToFile(_people, @"C:\Users\Niall\5th Year\Thesis\XML\AllPeopleUpdated.xml");
+            _skillService = skillService;
+            //var x = _skillService.GenerateSkillStats(_people);
+            var skills = _skillService.ParseSkillStatsWithCountAtLeastTenFromXml();
+            //_skillService.WriteSkillStatsWithCountOfAtLeastTenToXmlFile(skills);
+            _kMeansService.Perform(2, _people, skills);
+
             _companyJobPairs = _companyJobPairService.ParseTopCompanyJobPairsFromXml();
+            
             _topJobStats = _jobService.ParseTopJobStatsFromXml();
+            //_trainingAndTestingService.CreateTrainingAndTestingSetBasedOnSingleJob(_jobService.ParseJobStatsFromXml());
+
             _topCompanyStats = _companyService.ParseTopCompanyStatsFromXml();
+            _topSkillStats = _skillService.ParseTopSkillStatsFromXml();
+
         }
 
         public List<Person> GetPeople()
@@ -58,6 +74,11 @@ namespace LinkedInSearchUi.Model
         public List<CompanyStat> GetTopCompanyStats()
         {
             return _topCompanyStats;
+        }
+
+        public List<SkillStat> GetTopSkillStats()
+        {
+            return _topSkillStats;
         }
 
         private List<Person> ParseRawHtmlFilesFromDirectory()
@@ -85,7 +106,7 @@ namespace LinkedInSearchUi.Model
 
         private List<Person> ParsePeopleFromXml()
         {
-            var people = _personCustomXmlService.ReadFromFile(@"C:\Users\Niall\5th Year\Thesis\XML\all_people.xml");
+            var people = _personCustomXmlService.ReadFromFile(@"C:\Users\Niall\5th Year\Thesis\XML\AllPeople.xml");
             _luceneService = new LuceneService(people);
             return people;
         }
@@ -100,6 +121,20 @@ namespace LinkedInSearchUi.Model
         private List<Person> ParseTrainingPeopleFromXml()
         {
             var people = _personCustomXmlService.ReadFromFile(@"C:\Users\Niall\5th Year\Thesis\XML\training_set_new.xml");
+            _luceneService = new LuceneService(people);
+            return people;
+        }
+
+        private List<Person> ParseTestingPeopleTopJobFromXml()
+        {
+            var people = _personCustomXmlService.ReadFromFile(@"C:\Users\Niall\5th Year\Thesis\XML\TestingSetMostPopularJob.xml");
+            _luceneService = new LuceneService(people);
+            return people;
+        }
+
+        private List<Person> ParseTrainingPeopleTopJobFromXml()
+        {
+            var people = _personCustomXmlService.ReadFromFile(@"C:\Users\Niall\5th Year\Thesis\XML\TrainingSetMostPopularJob.xml");
             _luceneService = new LuceneService(people);
             return people;
         }

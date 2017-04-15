@@ -30,7 +30,7 @@ namespace LinkedInSearchUi.Indexing
                 {
                     int index = companyStats.FindIndex(t => string.Equals(t.CompanyName, experience.Organisation, StringComparison.OrdinalIgnoreCase));
 
-                    if (index >= 0)
+                    if (index != -1)
                     {
                         companyStats[index].Count++;
                     }

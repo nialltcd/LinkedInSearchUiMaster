@@ -1,5 +1,6 @@
 ﻿using LinkedInSearchUi.Graphing;
 using LinkedInSearchUi.Indexing;
+using LinkedInSearchUi.KMeansInfrastructure;
 using LinkedInSearchUi.Model;
 using LinkedInSearchUi.Resources;
 using LinkedInSearchUi.ViewModel;
@@ -28,7 +29,8 @@ namespace LinkedInSearchUi.DependencyInjection
             Bind<ICompanyJobPairService>().To<CompanyJobPairService>();
             Bind<IJobService>().To<JobService>();
             Bind<ICompanyService>().To<CompanyService>();
-
+            Bind<ISkillService>().To<SkillService>();
+            Bind<IKmeansService>().To<KMeansService>();
         }
     }
 }

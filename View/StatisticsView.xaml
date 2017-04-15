@@ -26,6 +26,9 @@
             <TabItem Header="Top Company Statistics" >
                 <oxy:PlotView Model="{Binding TopCompanyStatsPlot}"/>
             </TabItem>
+            <TabItem Header="Top Skill Statistics" >
+                <oxy:PlotView Model="{Binding TopSkillStatsPlot}"/>
+            </TabItem>
             <TabItem Header="Plot Usefulness Pie Chart" >
                 <oxy:PlotView Model="{Binding ProfileUsefulnessPlot}"/>
             </TabItem>

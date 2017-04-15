@@ -13,5 +13,6 @@ namespace LinkedInSearchUi.Graphing
         PlotModel GenerateUsefulProfilePieChart();
         PlotModel GenerateTopJobStats();
         PlotModel GenerateTopCompanyStats();
+        PlotModel GenerateTopSkillStats();
     }
 }

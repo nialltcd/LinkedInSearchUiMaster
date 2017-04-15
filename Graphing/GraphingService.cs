@@ -61,7 +61,7 @@ namespace LinkedInSearchUi.Graphing
             List<string> axis = new List<string>();
             foreach (var jobStat in topJobStats.Take(30))
             {
-                barItems.Add(new BarItem { Value = jobStat.Count });
+                barItems.Add(new BarItem { Value = jobStat.Employees.Count });
                 axis.Add(jobStat.JobName);
             }
             var barSeries = new BarSeries
@@ -109,6 +109,38 @@ namespace LinkedInSearchUi.Graphing
             {
                 Position = AxisPosition.Left,
                 Key = "Company Name",
+                ItemsSource = axis
+            });
+
+            return plot;
+        }
+
+        public PlotModel GenerateTopSkillStats()
+        {
+            var plot = new PlotModel { Title = "Top Skill Statistics" };
+
+            var topSkillStats = _model.GetTopSkillStats();
+
+            List<BarItem> barItems = new List<BarItem>();
+            List<string> axis = new List<string>();
+            foreach (var skillStat in topSkillStats.Take(30))
+            {
+                barItems.Add(new BarItem { Value = skillStat.Count });
+                axis.Add(skillStat.Name);
+            }
+            var barSeries = new BarSeries
+            {
+                ItemsSource = barItems,
+                LabelPlacement = LabelPlacement.Inside,
+                LabelFormatString = "{0:.00}"
+            };
+
+            plot.Series.Add(barSeries);
+
+            plot.Axes.Add(new CategoryAxis
+            {
+                Position = AxisPosition.Left,
+                Key = "Skill Name",
                 ItemsSource = axis
             });
 

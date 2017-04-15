@@ -19,6 +19,7 @@ namespace LinkedInSearchUi.ViewModel
             TopCompanyJobPairsPlot = _graphingService.GenerateTopCompanyJobPairs();
             TopJobStatsPlot = _graphingService.GenerateTopJobStats();
             TopCompanyStatsPlot = _graphingService.GenerateTopCompanyStats();
+            TopSkillStatsPlot = _graphingService.GenerateTopSkillStats();
             ProfileUsefulnessPlot = _graphingService.GenerateUsefulProfilePieChart();   
         }
 
@@ -48,6 +49,16 @@ namespace LinkedInSearchUi.ViewModel
             set
             {
                 _topCompanyStats = value;
+                RaisePropertyChanged();
+            }
+        }
+        private PlotModel _topSkillStats;
+        public PlotModel TopSkillStatsPlot
+        {
+            get { return _topSkillStats; }
+            set
+            {
+                _topSkillStats = value;
                 RaisePropertyChanged();
             }
         }

@@ -33,14 +33,14 @@ namespace LinkedInSearchUi.Indexing
 
                     if (index >= 0)
                     {
-                        jobStats[index].Count++;
+                        jobStats[index].Employees.Add(person);
                     }
                     else
                     {
                         jobStats.Add(new JobStat()
                         {
                             JobName = person.Experiences.FirstOrDefault().Role,
-                            Count = 1
+                            Employees = new List<Person> { person }
                         });
                     }
                 }
@@ -63,13 +63,13 @@ namespace LinkedInSearchUi.Indexing
 
         public void WriteJobStatsToXmlFile(List<JobStat> jobStats)
         {
-            var mostFrequentJobs = jobStats.OrderByDescending(t => t.Count).ToList();
+            var mostFrequentJobs = jobStats.OrderByDescending(t => t.Employees.Count).ToList();
             _jobStatsCustomXmlService.WriteToFile(mostFrequentJobs, _allJobStatsXmlFilePath);
         }
 
         public void WriteJobStatsTopStatisticsToXmlFile(List<JobStat> jobStats)
         {
-            var mostFrequentJobs = jobStats.OrderByDescending(t => t.Count).Take(100).ToList();
+            var mostFrequentJobs = jobStats.OrderByDescending(t => t.Employees.Count).Take(100).ToList();
             _jobStatsCustomXmlService.WriteToFile(mostFrequentJobs, _jobStatsTopStatisticsXmlFilePath);
         }
     }
