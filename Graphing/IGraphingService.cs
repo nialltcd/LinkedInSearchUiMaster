@@ -14,5 +14,6 @@ namespace LinkedInSearchUi.Graphing
         PlotModel GenerateTopJobStats();
         PlotModel GenerateTopCompanyStats();
         PlotModel GenerateTopSkillStats();
+        PlotModel GenerateMachineLearningAccuracy();
     }
 }

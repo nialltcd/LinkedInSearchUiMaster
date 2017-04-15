@@ -20,7 +20,8 @@ namespace LinkedInSearchUi.ViewModel
             TopJobStatsPlot = _graphingService.GenerateTopJobStats();
             TopCompanyStatsPlot = _graphingService.GenerateTopCompanyStats();
             TopSkillStatsPlot = _graphingService.GenerateTopSkillStats();
-            ProfileUsefulnessPlot = _graphingService.GenerateUsefulProfilePieChart();   
+            ProfileUsefulnessPlot = _graphingService.GenerateUsefulProfilePieChart();
+            MachineLearningAccuracyPlot = _graphingService.GenerateMachineLearningAccuracy();   
         }
 
         private PlotModel _topCompanyJobPairs;
@@ -69,6 +70,17 @@ namespace LinkedInSearchUi.ViewModel
             set
             {
                 _profileUsefulnessPlot = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private PlotModel _machineLearningAccuracyPlot;
+        public PlotModel MachineLearningAccuracyPlot
+        {
+            get { return _machineLearningAccuracyPlot; }
+            set
+            {
+                _machineLearningAccuracyPlot = value;
                 RaisePropertyChanged();
             }
         }

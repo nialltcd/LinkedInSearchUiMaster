@@ -8,6 +8,7 @@ using System;
 using System.Linq;
 using System.Text;
 using LinkedInSearchUi.KMeansInfrastructure;
+using LinkedInSearchUi.MachineLearning;
 
 namespace LinkedInSearchUi.Model
 {
@@ -27,9 +28,15 @@ namespace LinkedInSearchUi.Model
         private readonly ICompanyService _companyService;
         private readonly ISkillService _skillService;
         private readonly IKmeansService _kMeansService;
+        private readonly ISupportVectorMachineService _supportVectorMachineService;
+        private readonly IRandomForestService _randomForestService;
 
 
-        public Model(IHtmlParser htmlParser, ITrainingAndTestingService trainingAndTestingService, ICompanyService companyService, IJobService jobService, ICompanyJobPairService companyJobPairService, ISkillService skillService, IKmeansService kMeansService)
+
+        public Model(IHtmlParser htmlParser, ITrainingAndTestingService trainingAndTestingService,
+            ICompanyService companyService, IJobService jobService,
+            ICompanyJobPairService companyJobPairService, ISkillService skillService,
+            IKmeansService kMeansService, ISupportVectorMachineService supportVectorMachineService, IRandomForestService randomForestService)
         {
             _personCustomXmlService = new CustomXmlService<Person>();
             _parser = htmlParser;
@@ -38,13 +45,20 @@ namespace LinkedInSearchUi.Model
             _jobService = jobService;
             _companyService = companyService;
             _kMeansService = kMeansService;
+            _supportVectorMachineService = supportVectorMachineService;
+            _randomForestService = randomForestService;
             _people = ParseTrainingPeopleTopJobFromXml();
             //_personCustomXmlService.WriteToFile(_people, @"C:\Users\Niall\5th Year\Thesis\XML\AllPeopleUpdated.xml");
             _skillService = skillService;
             //var x = _skillService.GenerateSkillStats(_people);
             var skills = _skillService.ParseSkillStatsWithCountAtLeastTenFromXml();
             //_skillService.WriteSkillStatsWithCountOfAtLeastTenToXmlFile(skills);
-            _kMeansService.Perform(2, _people, skills);
+            //_kMeansService.Perform(2, _people, skills);
+            var testingPeople = ParseTestingPeopleTopJobFromXml();
+            randomForestService.Train(_people);
+            randomForestService.Test(testingPeople);
+            _supportVectorMachineService.Train(_people);
+            _supportVectorMachineService.Test(_people);
 
             _companyJobPairs = _companyJobPairService.ParseTopCompanyJobPairsFromXml();
             
@@ -79,6 +93,15 @@ namespace LinkedInSearchUi.Model
         public List<SkillStat> GetTopSkillStats()
         {
             return _topSkillStats;
+        }
+
+        public List<MachineLearningStat> GetMachineLearningStats()
+        {
+            return new List<MachineLearningStat>()
+            {
+                _randomForestService.ComputeMachineLearningStat(),
+                _supportVectorMachineService.ComputeMachineLearningStat()
+            };
         }
 
         private List<Person> ParseRawHtmlFilesFromDirectory()

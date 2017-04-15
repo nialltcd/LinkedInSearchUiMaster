@@ -171,5 +171,40 @@ namespace LinkedInSearchUi.Graphing
             model.Series.Add(seriesP1);
             return model;
         }
+
+        public PlotModel GenerateMachineLearningAccuracy()
+        {
+            var plot = new PlotModel { Title = "Machine Learning Accuracy" };
+
+            var machineLearningStats = _model.GetMachineLearningStats();
+
+            List<BarItem> barItems = new List<BarItem>();
+            List<string> axis = new List<string>();
+            foreach (var machineLearningStat in machineLearningStats)
+            {
+                barItems.Add(new BarItem { Value = machineLearningStat.PrimaryJobAccurracy});
+                axis.Add(machineLearningStat.Name +" Primary Job Accuracy");
+
+                barItems.Add(new BarItem { Value = machineLearningStat.OtherJobAccurracy });
+                axis.Add(machineLearningStat.Name+" Other Job Accuracy");
+            }
+            var barSeries = new BarSeries
+            {
+                ItemsSource = barItems,
+                LabelPlacement = LabelPlacement.Inside,
+                LabelFormatString = "{0:.00}"
+            };
+
+            plot.Series.Add(barSeries);
+
+            plot.Axes.Add(new CategoryAxis
+            {
+                Position = AxisPosition.Left,
+                Key = "Machine Learning Algorithm Name",
+                ItemsSource = axis
+            });
+
+            return plot;
+        }
     }
 }

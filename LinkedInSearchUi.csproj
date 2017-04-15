@@ -135,6 +135,7 @@
     <Compile Include="DataTypes\Education.cs" />
     <Compile Include="DataTypes\Job.cs" />
     <Compile Include="DataTypes\JobStat.cs" />
+    <Compile Include="DataTypes\MachineLearningStat.cs" />
     <Compile Include="DataTypes\Skill.cs" />
     <Compile Include="DataTypes\SkillStat.cs" />
     <Compile Include="DependencyInjection\DiLinkedIn.cs" />
@@ -157,6 +158,14 @@
     <Compile Include="KMeansInfrastructure\DataPoint.cs" />
     <Compile Include="KMeansInfrastructure\IKmeansService.cs" />
     <Compile Include="KMeansInfrastructure\KMeansService.cs" />
+    <Compile Include="MachineLearning\Attribute.cs" />
+    <Compile Include="MachineLearning\DataPoint.cs" />
+    <Compile Include="MachineLearning\DataPointService.cs" />
+    <Compile Include="MachineLearning\IDataPointService.cs" />
+    <Compile Include="MachineLearning\IRandomForestService.cs" />
+    <Compile Include="MachineLearning\ISupportVectorMachineService.cs" />
+    <Compile Include="MachineLearning\RandomForestService.cs" />
+    <Compile Include="MachineLearning\SupportVectorMachineService.cs" />
     <Compile Include="Model\IModel.cs" />
     <Compile Include="Resources\IocContainer.cs" />
     <Compile Include="Resources\IWindowFactory.cs" />

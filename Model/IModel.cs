@@ -14,6 +14,7 @@ namespace LinkedInSearchUi.Model
         List<JobStat> GetTopJobStats();
         List<CompanyStat> GetTopCompanyStats();
         List<SkillStat> GetTopSkillStats();
+        List<MachineLearningStat> GetMachineLearningStats();
         List<Company> GenerateCompanies(List<Person> people);
         List<Person> LuceneSearch(string textSearch);
         void CreateTrainingAndTestSetsBasedOnCompany();

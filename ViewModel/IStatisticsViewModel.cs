@@ -14,5 +14,7 @@ namespace LinkedInSearchUi.ViewModel
         PlotModel TopJobStatsPlot { get; }
         PlotModel TopCompanyStatsPlot { get; }
         PlotModel ProfileUsefulnessPlot { get; }
+        PlotModel MachineLearningAccuracyPlot { get; }
+
     }
 }

@@ -1,6 +1,7 @@
 ﻿using LinkedInSearchUi.Graphing;
 using LinkedInSearchUi.Indexing;
 using LinkedInSearchUi.KMeansInfrastructure;
+using LinkedInSearchUi.MachineLearning;
 using LinkedInSearchUi.Model;
 using LinkedInSearchUi.Resources;
 using LinkedInSearchUi.ViewModel;
@@ -31,6 +32,9 @@ namespace LinkedInSearchUi.DependencyInjection
             Bind<ICompanyService>().To<CompanyService>();
             Bind<ISkillService>().To<SkillService>();
             Bind<IKmeansService>().To<KMeansService>();
+            Bind<IDataPointService>().To<DataPointService>();
+            Bind<ISupportVectorMachineService>().To<SupportVectorMachineService>();
+            Bind<IRandomForestService>().To<RandomForestService>();
         }
     }
 }
