@@ -38,6 +38,7 @@ namespace LinkedInSearchUi.Model
             ICompanyJobPairService companyJobPairService, ISkillService skillService,
             IKmeansService kMeansService, ISupportVectorMachineService supportVectorMachineService, IRandomForestService randomForestService)
         {
+            //Initialise properties
             _personCustomXmlService = new CustomXmlService<Person>();
             _parser = htmlParser;
             _trainingAndTestingService = trainingAndTestingService;
@@ -47,26 +48,33 @@ namespace LinkedInSearchUi.Model
             _kMeansService = kMeansService;
             _supportVectorMachineService = supportVectorMachineService;
             _randomForestService = randomForestService;
+            _skillService = skillService;
+
+            //Parse data from files
             _people = ParseTrainingPeopleTopJobFromXml();
             //_personCustomXmlService.WriteToFile(_people, @"C:\Users\Niall\5th Year\Thesis\XML\AllPeopleUpdated.xml");
-            _skillService = skillService;
-            //var x = _skillService.GenerateSkillStats(_people);
-            var skills = _skillService.ParseSkillStatsWithCountAtLeastTenFromXml();
+            //var x = _skillService.GenerateSkillStats(_people);            
+            //var skills = _skillService.ParseSkillStatsWithCountAtLeastTenFromXml();
             //_skillService.WriteSkillStatsWithCountOfAtLeastTenToXmlFile(skills);
             //_kMeansService.Perform(2, _people, skills);
             var testingPeople = ParseTestingPeopleTopJobFromXml();
-            randomForestService.Train(_people);
-            randomForestService.Test(testingPeople);
-            _supportVectorMachineService.Train(_people);
-            _supportVectorMachineService.Test(_people);
-
             _companyJobPairs = _companyJobPairService.ParseTopCompanyJobPairsFromXml();
-            
             _topJobStats = _jobService.ParseTopJobStatsFromXml();
-            //_trainingAndTestingService.CreateTrainingAndTestingSetBasedOnSingleJob(_jobService.ParseJobStatsFromXml());
-
             _topCompanyStats = _companyService.ParseTopCompanyStatsFromXml();
             _topSkillStats = _skillService.ParseTopSkillStatsFromXml();
+
+            //Train Machine Learning Models with training data
+            _randomForestService.Train(_people);
+            _supportVectorMachineService.Train(_people);
+            _kMeansService.Train(_people);
+
+            //Test Machine Learning Models with testing data
+            _randomForestService.Test(testingPeople);
+            _supportVectorMachineService.Test(testingPeople);
+            _kMeansService.Test(testingPeople);
+
+            //_trainingAndTestingService.CreateTrainingAndTestingSetBasedOnSingleJob(_jobService.ParseJobStatsFromXml());
+
 
         }
 
@@ -99,8 +107,12 @@ namespace LinkedInSearchUi.Model
         {
             return new List<MachineLearningStat>()
             {
-                _randomForestService.ComputeMachineLearningStat(),
-                _supportVectorMachineService.ComputeMachineLearningStat()
+                _randomForestService.ComputeMachineLearningTrainingStat(),
+                _randomForestService.ComputeMachineLearningTestingStat(),
+                _supportVectorMachineService.ComputeMachineLearningTrainingStat(),
+                _supportVectorMachineService.ComputeMachineLearningTestingStat(),
+                _kMeansService.ComputeMachineLearningTrainingStat(),
+                _kMeansService.ComputeMachineLearningTestingStat()
             };
         }
 

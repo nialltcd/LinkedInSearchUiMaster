@@ -9,6 +9,10 @@ namespace LinkedInSearchUi.KMeansInfrastructure
 {
     public interface IKmeansService
     {
-        void Perform(int numberOfClusters, List<Person> people, List<SkillStat> skills);
+        void Train(List<Person> trainingPeople);
+        void Test(List<Person> trainingPeople);
+        MachineLearningStat ComputeMachineLearningTrainingStat();
+        MachineLearningStat ComputeMachineLearningTestingStat();
+
     }
 }

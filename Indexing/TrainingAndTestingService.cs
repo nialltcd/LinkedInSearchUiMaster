@@ -125,8 +125,8 @@ namespace LinkedInSearchUi.Indexing
             var mostPopularJob = jobs.FirstOrDefault();
 
             //Split these employees into a training and testing set
-            var employeesWithMostPopularJobTraining = mostPopularJob.Employees.GetRange(0, (mostPopularJob.Employees.Count / 2) - 1);
-            var employeesWithMostPopularJobTesting = mostPopularJob.Employees.GetRange((mostPopularJob.Employees.Count / 2), mostPopularJob.Employees.Count / 2);
+            var employeesWithMostPopularJobTraining = mostPopularJob.Employees.Take(mostPopularJob.Employees.Count / 2);
+            var employeesWithMostPopularJobTesting = mostPopularJob.Employees.Skip(mostPopularJob.Employees.Count / 2);
 
             //Remove this most popular job from the list of jobs
             jobs.ToList().RemoveAt(0);
@@ -136,7 +136,7 @@ namespace LinkedInSearchUi.Indexing
             var randomJobs = jobs.OrderBy(item => rnd.Next()).ToList();
 
             //Select an equal number of employees that do not have the most popular job for the training set
-            var randomTrainingJobs = randomJobs.GetRange(0, mostPopularJob.Employees.Count / 2);
+            var randomTrainingJobs = randomJobs.Take(mostPopularJob.Employees.Count / 2);
             List<Person> randomTrainingEmployees = new List<Person>();
             foreach (var job in randomTrainingJobs)
             {
@@ -144,7 +144,7 @@ namespace LinkedInSearchUi.Indexing
             }
 
             //Select an equal number of employees that do not have the most popular job for the testing set
-            var randomTestingJobs = randomJobs.GetRange(mostPopularJob.Employees.Count / 2, mostPopularJob.Employees.Count);
+            var randomTestingJobs = randomJobs.Skip(mostPopularJob.Employees.Count / 2).Take(mostPopularJob.Employees.Count / 2);
             List<Person> randomTestingEmployees = new List<Person>();
             foreach (var job in randomTestingJobs)
             {
@@ -158,7 +158,7 @@ namespace LinkedInSearchUi.Indexing
             //Write new testing set to XML file
             var testingSetFinal = employeesWithMostPopularJobTesting.Concat(randomTestingEmployees).ToList();
             testingSetFinal.Select(t => t.Experiences = new List<Experience>());
-            _personCustomXmlService.WriteToFile(trainingSetFinal, @"C:\Users\Niall\5th Year\Thesis\XML\TestingSetMostPopularJob.xml");
+            _personCustomXmlService.WriteToFile(testingSetFinal, @"C:\Users\Niall\5th Year\Thesis\XML\TestingSetMostPopularJob.xml");
 
         }
 

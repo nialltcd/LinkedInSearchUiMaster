@@ -14,7 +14,9 @@ namespace LinkedInSearchUi.MachineLearning
     {
         private IDataPointService _dataPointService;
         private SupportVectorMachine _supportVectorMachine;
+        private bool[] trainingPredictions;
         private bool[] testPredictions;
+
 
         public SupportVectorMachineService(IDataPointService dataPointService)
         {
@@ -39,11 +41,11 @@ namespace LinkedInSearchUi.MachineLearning
             _supportVectorMachine = learn.Learn(inputs, expectedResults);
 
             // Finally, we can obtain the decisions predicted by the machine:
-            bool[] prediction = _supportVectorMachine.Decide(inputs);
+            trainingPredictions = _supportVectorMachine.Decide(inputs);
 
             File.WriteAllLines(
                 @"C:\Users\Niall\Documents\Visual Studio 2015\Projects\LinkedInSearchUi\LinkedIn Dataset\XML\predictions.txt" // <<== Put the file name here
-            , prediction.Select(d => d.ToString()).ToArray());
+            , trainingPredictions.Select(d => d.ToString()).ToArray());
 
 
         }
@@ -57,23 +59,45 @@ namespace LinkedInSearchUi.MachineLearning
            , testPredictions.Select(d => d.ToString()).ToArray());
         }
 
-        public MachineLearningStat ComputeMachineLearningStat()
+        public MachineLearningStat ComputeMachineLearningTrainingStat()
         {
-            int primaryJobCorrectCount = 0, otherJobCorrectCount = 0;
+            double primaryJobCorrectCount = 0, otherJobCorrectCount = 0;
+
+            for (int i = 0; i < trainingPredictions.Length; i++)
+            {
+                if (i < trainingPredictions.Length / 2)
+                    if (trainingPredictions[i] == false)
+                        primaryJobCorrectCount++;
+                else
+                    if (trainingPredictions[i] == true)
+                        otherJobCorrectCount++;
+            }
+
+            return new MachineLearningStat()
+            {
+                Name = "Support Vector Machine Training",
+                PrimaryJobAccurracy = (double)primaryJobCorrectCount / (double)(testPredictions.Length / 2),
+                OtherJobAccurracy = (double)otherJobCorrectCount / (double)(testPredictions.Length / 2)
+            };
+        }
+
+        public MachineLearningStat ComputeMachineLearningTestingStat()
+        {
+            double primaryJobCorrectCount = 0, otherJobCorrectCount = 0;
 
             for (int i = 0; i < testPredictions.Length; i++)
             {
                 if (i < testPredictions.Length / 2)
                     if (testPredictions[i] == false)
                         primaryJobCorrectCount++;
-                else
+                    else
                     if (testPredictions[i] == true)
                         otherJobCorrectCount++;
             }
 
             return new MachineLearningStat()
             {
-                Name = "Support Vector Machine",
+                Name = "Support Vector Machine Testing",
                 PrimaryJobAccurracy = (double)primaryJobCorrectCount / (double)(testPredictions.Length / 2),
                 OtherJobAccurracy = (double)otherJobCorrectCount / (double)(testPredictions.Length / 2)
             };

@@ -11,6 +11,7 @@ namespace LinkedInSearchUi.MachineLearning
     {
         void Train(List<Person> people);
         void Test(List<Person> people);
-        MachineLearningStat ComputeMachineLearningStat();
+        MachineLearningStat ComputeMachineLearningTrainingStat();
+        MachineLearningStat ComputeMachineLearningTestingStat();
     }
 }

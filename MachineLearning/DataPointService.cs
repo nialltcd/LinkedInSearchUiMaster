@@ -33,7 +33,7 @@ namespace LinkedInSearchUi.MachineLearning
 
         public double[][] GenerateDataPointsFromPeople(List<Person> people)
         {
-            _allSkills = _skillService.GenerateSkillStats(people).Where(t=>t.Count >= 50).ToList();
+            _allSkills = _skillService.GenerateSkillStats(people).OrderBy(t=>t.Count).Take(50).ToList();
             var dataPoints = ConvertAllPeopleToDataPoints(people);
             return ConvertRawDataPointsToMachineLearningInputFormat(dataPoints);
         }

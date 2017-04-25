@@ -14,6 +14,7 @@ namespace LinkedInSearchUi.MachineLearning
     {
         private readonly IDataPointService _dataPointService;
         private RandomForest _randomForest;
+        private int[] trainingPredictions;
         private int[] testPredictions;
         public RandomForestService(IDataPointService dataPointService)
         {
@@ -35,30 +36,55 @@ namespace LinkedInSearchUi.MachineLearning
             _randomForest = teacher.Learn(inputs, expectedResults);
 
             // We can estimate class labels using
-            int[] predicted = _randomForest.Decide(inputs);
+            trainingPredictions = _randomForest.Decide(inputs);
 
             // And the classification error (0.0006) can be computed as 
             double error = new ZeroOneLoss(expectedResults).Loss(_randomForest.Decide(inputs));
 
             File.WriteAllLines(
                 @"C:\Users\Niall\Documents\Visual Studio 2015\Projects\LinkedInSearchUi\LinkedIn Dataset\XML\random_forest_predictions.txt" // <<== Put the file name here
-            , predicted.Select(d => d.ToString()).ToArray());
+            , trainingPredictions.Select(d => d.ToString()).ToArray());
         }
 
         public void Test(List<Person> testingPeople)
         {
             double[][] inputs = _dataPointService.GenerateDataPointsFromPeople(testingPeople);
             testPredictions = _randomForest.Decide(inputs);
+            //calculate
             File.WriteAllLines(
                @"C:\Users\Niall\Documents\Visual Studio 2015\Projects\LinkedInSearchUi\LinkedIn Dataset\XML\random_forest_test_predictions.txt" // <<== Put the file name here
            , testPredictions.Select(d => d.ToString()).ToArray());
         }
 
-        public MachineLearningStat ComputeMachineLearningStat()
+        public MachineLearningStat ComputeMachineLearningTrainingStat()
         {
-            int primaryJobCorrectCount = 0, otherJobCorrectCount = 0;
+            double primaryJobCorrectCount = 0, otherJobCorrectCount = 0;
 
-            for(int i=0;i< testPredictions.Length;i++)
+            for(int i=0;i< trainingPredictions.Length;i++)
+            {
+                if (i < trainingPredictions.Length / 2)
+                {
+                    if (trainingPredictions[i] == 0)
+                        primaryJobCorrectCount++;
+                }
+                else
+                    if (trainingPredictions[i] == 1)
+                        otherJobCorrectCount++;
+            }
+
+            return new MachineLearningStat()
+            {
+                Name = "Random Forest Training",
+                PrimaryJobAccurracy = primaryJobCorrectCount/ (trainingPredictions.Length / 2),
+                OtherJobAccurracy = otherJobCorrectCount/ (trainingPredictions.Length / 2)
+            };
+        }
+
+        public MachineLearningStat ComputeMachineLearningTestingStat()
+        {
+            double primaryJobCorrectCount = 0, otherJobCorrectCount = 0;
+
+            for (int i = 0; i < testPredictions.Length; i++)
             {
                 if (i < testPredictions.Length / 2)
                 {
@@ -67,14 +93,14 @@ namespace LinkedInSearchUi.MachineLearning
                 }
                 else
                     if (testPredictions[i] == 1)
-                        otherJobCorrectCount++;
+                    otherJobCorrectCount++;
             }
 
             return new MachineLearningStat()
             {
-                Name = "Random Forest",
-                PrimaryJobAccurracy = primaryJobCorrectCount/ (testPredictions.Length / 2),
-                OtherJobAccurracy = otherJobCorrectCount/ (testPredictions.Length / 2)
+                Name = "Random Forest Testing",
+                PrimaryJobAccurracy = primaryJobCorrectCount / (testPredictions.Length / 2),
+                OtherJobAccurracy = otherJobCorrectCount / (testPredictions.Length / 2)
             };
         }
     }
