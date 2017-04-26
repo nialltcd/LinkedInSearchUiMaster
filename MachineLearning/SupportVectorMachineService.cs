@@ -24,9 +24,9 @@ namespace LinkedInSearchUi.MachineLearning
         }
 
 
-        public void Train(List<Person> trainingPeople)
+        public void Train(List<Person> trainingPeople, int skillSetSize)
         {
-            double[][] inputs = _dataPointService.GenerateDataPointsFromPeople(trainingPeople);
+            double[][] inputs = _dataPointService.GenerateDataPointsFromPeople(trainingPeople, skillSetSize);
 
             int[] expectedResults = _dataPointService.GenerateExpectedResultFromPeople(trainingPeople);
 
@@ -50,9 +50,9 @@ namespace LinkedInSearchUi.MachineLearning
 
         }
 
-        public void Test(List<Person> testingPeople)
+        public void Test(List<Person> testingPeople, int skillSetSize)
         {
-            double[][] inputs = _dataPointService.GenerateDataPointsFromPeople(testingPeople);
+            double[][] inputs = _dataPointService.GenerateDataPointsFromPeople(testingPeople, skillSetSize);
             testPredictions = _supportVectorMachine.Decide(inputs);
             File.WriteAllLines(
                @"C:\Users\Niall\Documents\Visual Studio 2015\Projects\LinkedInSearchUi\LinkedIn Dataset\XML\support_vector_machine_test_predictions.txt" // <<== Put the file name here

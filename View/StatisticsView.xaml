@@ -33,7 +33,29 @@
                 <oxy:PlotView Model="{Binding ProfileUsefulnessPlot}"/>
             </TabItem>
             <TabItem Header="Machine Learning Accuracy" >
-                <oxy:PlotView Model="{Binding MachineLearningAccuracyPlot}"/>
+                <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Row="0" Text="Random Forest Size: "/>
+                        <TextBox Grid.Row="0" Grid.Column="1" Width="50" Text="{Binding RandomForestSize, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                        <TextBlock Grid.Row="1" Text="Skill Set Size: "/>
+                        <TextBox Grid.Row="1" Grid.Column="1" Width="50" Text="{Binding SkillSetSize, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                        <Button Grid.Row="0" Grid.Column="2" Grid.RowSpan="2" Width="Auto" Height="Auto" Content="Update" Command="{Binding UpdatePerformanceStatistics}"/>
+                        <TextBlock Grid.Row="2" Text="Job Title: "/>
+                        <TextBox Grid.Row="2" Grid.Column="1" Width="50" Text="{Binding JobTitle, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                        <ProgressBar Grid.Row="0" Grid.Column="3" Width="100" Height="15" HorizontalAlignment="Left" VerticalAlignment="Bottom"  IsIndeterminate = "True" Visibility="{Binding UpdatingPerformanceStatisticsInProgressVisibility, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+                        <oxy:PlotView Grid.Row="3" Grid.ColumnSpan="4" Model="{Binding MachineLearningAccuracyPlot}"/>
+                </Grid>
             </TabItem>
             </TabControl>
         </Grid>

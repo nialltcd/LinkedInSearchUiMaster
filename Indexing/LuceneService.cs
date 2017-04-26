@@ -20,9 +20,11 @@ namespace LinkedInSearchUi.Indexing
         private Directory luceneIndexDirectory;
         private IndexWriter writer;
         private string indexPath = @"c:\temp\LuceneIndex";
+        private List<Person> _people;
 
         public LuceneService(List<Person> people)
         {
+            _people = people;
             luceneIndexDirectory = BuildIndex(people);
         }
 
@@ -51,7 +53,9 @@ namespace LinkedInSearchUi.Indexing
                         document.Add(new Field("Duration", experience.Duration, Field.Store.YES, Field.Index.NOT_ANALYZED));
                         document.Add(new Field("DurationInMonths", experience.DurationInMonths.ToString(), Field.Store.YES, Field.Index.NOT_ANALYZED));
 
-                        all += " "+experience.Organisation +" "+ experience.Role+" ";
+                        //all += " "+experience.Organisation +" "+ experience.Role+" ";
+                        all += " " + experience.Organisation + " ";
+
                     }
                     foreach (var education in person.Education)
                     {
@@ -88,7 +92,7 @@ namespace LinkedInSearchUi.Indexing
 
                     //var query = queryParser.Parse(textSearch);
 
-                    var collector = TopScoreDocCollector.Create(1000, true);
+                    var collector = TopScoreDocCollector.Create(_people.Count, true);
 
                     searcher.Search(query, collector);
 

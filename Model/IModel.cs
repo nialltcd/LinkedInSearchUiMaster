@@ -15,6 +15,10 @@ namespace LinkedInSearchUi.Model
         List<CompanyStat> GetTopCompanyStats();
         List<SkillStat> GetTopSkillStats();
         List<MachineLearningStat> GetMachineLearningStats();
+        MachineLearningStat GetLuceneStats();
+        int GetRandomForestSize();
+        int GetSkillSetSize();
+        void UpdatePerformanceStats(int randomForestSize, int skillSetSize, string jobTitle);
         List<Company> GenerateCompanies(List<Person> people);
         List<Person> LuceneSearch(string textSearch);
         void CreateTrainingAndTestSetsBasedOnCompany();

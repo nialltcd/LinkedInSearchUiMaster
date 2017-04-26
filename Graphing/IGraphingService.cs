@@ -15,5 +15,8 @@ namespace LinkedInSearchUi.Graphing
         PlotModel GenerateTopCompanyStats();
         PlotModel GenerateTopSkillStats();
         PlotModel GenerateMachineLearningAccuracy();
+        int GenerateRandomForestSize();
+        int GenerateSkillSetSize();
+        void UpdatePerformanceStatisticsAction(int randomForestSize, int skillSetSize, string jobTitle);
     }
 }

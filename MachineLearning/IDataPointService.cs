@@ -9,7 +9,7 @@ namespace LinkedInSearchUi.MachineLearning
 {
     public interface IDataPointService
     {
-        double[][] GenerateDataPointsFromPeople(List<Person> people);
+        double[][] GenerateDataPointsFromPeople(List<Person> people, int skillSetSize);
         int[] GenerateExpectedResultFromPeople(List<Person> people);
 
     }

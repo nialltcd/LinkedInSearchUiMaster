@@ -20,16 +20,16 @@ namespace LinkedInSearchUi.MachineLearning
         {
             _dataPointService = dataPointService;
         }
-        public void Train(List<Person> people)
+        public void Train(List<Person> people, int numberOfTrees, int skillSetSize)
         {
-            double[][] inputs = _dataPointService.GenerateDataPointsFromPeople(people);
+            double[][] inputs = _dataPointService.GenerateDataPointsFromPeople(people, skillSetSize);
 
             int[] expectedResults = _dataPointService.GenerateExpectedResultFromPeople(people);
 
             // Create the forest learning algorithm
             var teacher = new RandomForestLearning()
             {
-                NumberOfTrees = 500, // use 10 trees in the forest
+                NumberOfTrees = numberOfTrees, // use 10 trees in the forest
             };
 
             // Finally, learn a random forest from data
@@ -46,9 +46,9 @@ namespace LinkedInSearchUi.MachineLearning
             , trainingPredictions.Select(d => d.ToString()).ToArray());
         }
 
-        public void Test(List<Person> testingPeople)
+        public void Test(List<Person> testingPeople, int skillSetSize)
         {
-            double[][] inputs = _dataPointService.GenerateDataPointsFromPeople(testingPeople);
+            double[][] inputs = _dataPointService.GenerateDataPointsFromPeople(testingPeople, skillSetSize);
             testPredictions = _randomForest.Decide(inputs);
             //calculate
             File.WriteAllLines(

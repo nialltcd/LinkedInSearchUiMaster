@@ -188,6 +188,9 @@ namespace LinkedInSearchUi.Graphing
                 barItems.Add(new BarItem { Value = machineLearningStat.OtherJobAccurracy });
                 axis.Add(machineLearningStat.Name+" Other Job Accuracy");
             }
+            var luceneStats = _model.GetLuceneStats();
+            barItems.Add(new BarItem { Value = luceneStats.PrimaryJobAccurracy});
+            axis.Add(luceneStats.Name + " Primary Job Accuracy");
             var barSeries = new BarSeries
             {
                 ItemsSource = barItems,
@@ -205,6 +208,21 @@ namespace LinkedInSearchUi.Graphing
             });
 
             return plot;
+        }
+        
+        public int GenerateRandomForestSize()
+        {
+            return _model.GetRandomForestSize();
+        }
+
+        public int GenerateSkillSetSize()
+        {
+            return _model.GetSkillSetSize();
+        }
+
+        public void UpdatePerformanceStatisticsAction(int randomForestSize, int skillSetSize, string jobTitle)
+        {
+            _model.UpdatePerformanceStats(randomForestSize, skillSetSize, jobTitle);
         }
     }
 }

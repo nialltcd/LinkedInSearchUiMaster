@@ -9,8 +9,8 @@ namespace LinkedInSearchUi.MachineLearning
 {
     public interface ISupportVectorMachineService
     {
-        void Train(List<Person> people);
-        void Test(List<Person> people);
+        void Train(List<Person> people, int skillSetSize);
+        void Test(List<Person> people, int skillSetSize);
         MachineLearningStat ComputeMachineLearningTrainingStat();
         MachineLearningStat ComputeMachineLearningTestingStat();
     }

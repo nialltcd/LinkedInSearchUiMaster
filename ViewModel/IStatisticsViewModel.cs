@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace LinkedInSearchUi.ViewModel
 {
@@ -15,6 +16,8 @@ namespace LinkedInSearchUi.ViewModel
         PlotModel TopCompanyStatsPlot { get; }
         PlotModel ProfileUsefulnessPlot { get; }
         PlotModel MachineLearningAccuracyPlot { get; }
-
+        int RandomForestSize { get; }
+        int SkillSetSize { get; }
+        ICommand UpdatePerformanceStatistics { get; }
     }
 }

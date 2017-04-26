@@ -13,5 +13,6 @@ namespace LinkedInSearchUi.Indexing
         void CreateTrainingAndTestSetsBasedOnCompany();
         void CreateTrainingAndTestingSetNewRequirements(List<Person> people);
         void CreateTrainingAndTestingSetBasedOnSingleJob(List<JobStat> people);
+        List<List<Person>> CreateTrainingAndTestingSetBasedJobInput(string input, List<JobStat> jobStats);
     }
 }

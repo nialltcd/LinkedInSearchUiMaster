@@ -19,7 +19,8 @@ namespace LinkedInSearchUi.Model
         private ITrainingAndTestingService _trainingAndTestingService;
         private ICompanyJobPairService _companyJobPairService;
         private CustomXmlService<Person> _personCustomXmlService;
-        private readonly List<Person> _people;
+        private List<Person> _trainingPeople;
+        private List<Person> _testingPeople;
         private readonly List<CompanyJobPair> _companyJobPairs;
         private readonly List<JobStat> _topJobStats;
         private readonly List<CompanyStat> _topCompanyStats;
@@ -30,6 +31,9 @@ namespace LinkedInSearchUi.Model
         private readonly IKmeansService _kMeansService;
         private readonly ISupportVectorMachineService _supportVectorMachineService;
         private readonly IRandomForestService _randomForestService;
+        private int _randomForestSize = 5;
+        private int _skillSetSize = 50;
+        private string _jobName = "Software Developer";
 
 
 
@@ -50,37 +54,54 @@ namespace LinkedInSearchUi.Model
             _randomForestService = randomForestService;
             _skillService = skillService;
 
+
             //Parse data from files
-            _people = ParseTrainingPeopleTopJobFromXml();
+            _trainingPeople = ParseTrainingPeopleTopJobFromXml();
             //_personCustomXmlService.WriteToFile(_people, @"C:\Users\Niall\5th Year\Thesis\XML\AllPeopleUpdated.xml");
             //var x = _skillService.GenerateSkillStats(_people);            
             //var skills = _skillService.ParseSkillStatsWithCountAtLeastTenFromXml();
             //_skillService.WriteSkillStatsWithCountOfAtLeastTenToXmlFile(skills);
             //_kMeansService.Perform(2, _people, skills);
-            var testingPeople = ParseTestingPeopleTopJobFromXml();
+            _testingPeople = ParseTestingPeopleTopJobFromXml();
             _companyJobPairs = _companyJobPairService.ParseTopCompanyJobPairsFromXml();
             _topJobStats = _jobService.ParseTopJobStatsFromXml();
             _topCompanyStats = _companyService.ParseTopCompanyStatsFromXml();
             _topSkillStats = _skillService.ParseTopSkillStatsFromXml();
 
-            //Train Machine Learning Models with training data
-            _randomForestService.Train(_people);
-            _supportVectorMachineService.Train(_people);
-            _kMeansService.Train(_people);
-
-            //Test Machine Learning Models with testing data
-            _randomForestService.Test(testingPeople);
-            _supportVectorMachineService.Test(testingPeople);
-            _kMeansService.Test(testingPeople);
+            UpdatePerformanceStats(_randomForestSize,_skillSetSize, _jobName);
 
             //_trainingAndTestingService.CreateTrainingAndTestingSetBasedOnSingleJob(_jobService.ParseJobStatsFromXml());
 
 
         }
 
+        public void UpdatePerformanceStats(int randomForestSize, int skillSetSize, string jobName)
+        {
+            _randomForestSize = randomForestSize;
+            _skillSetSize = skillSetSize;
+
+            if (jobName != _jobName)
+            {
+                var trainingAndTestingSets = _trainingAndTestingService.CreateTrainingAndTestingSetBasedJobInput(jobName, _jobService.ParseJobStatsFromXml());
+                _trainingPeople = trainingAndTestingSets[0];
+                _testingPeople = trainingAndTestingSets[1];
+                _jobName = jobName;
+            }
+
+            //Train Machine Learning Models with training data
+            _randomForestService.Train(_trainingPeople, randomForestSize, skillSetSize);
+            _supportVectorMachineService.Train(_trainingPeople, skillSetSize);
+            _kMeansService.Train(_trainingPeople, skillSetSize);
+
+            //Test Machine Learning Models with testing data
+            _randomForestService.Test(_testingPeople, skillSetSize);
+            _supportVectorMachineService.Test(_testingPeople, skillSetSize);
+            _kMeansService.Test(_testingPeople, skillSetSize);
+        }
+
         public List<Person> GetPeople()
         {
-            return _people;
+            return _trainingPeople;
         }
 
         public List<CompanyJobPair> GetCompanyJobPairs()
@@ -194,12 +215,43 @@ namespace LinkedInSearchUi.Model
                 }
             }
             return companies;
-        }    
-        
+        }
+
+        public MachineLearningStat GetLuceneStats()
+        {
+            var jobRole = _trainingPeople.FirstOrDefault().Experiences.FirstOrDefault().Role;
+            var luceneSearchResults = _luceneService.SearchIndex(jobRole);
+
+            double primaryJobCorrectCount = 0;
+            foreach (var person in luceneSearchResults)
+            {
+                if (person.Experiences.FirstOrDefault().Role == jobRole)
+                    primaryJobCorrectCount++;
+            }
+
+            return new MachineLearningStat()
+            {
+                Name = "Lucene Search Base Result",
+                PrimaryJobAccurracy = (double)primaryJobCorrectCount / (double)(_trainingPeople.Count / 2),
+                OtherJobAccurracy = 0.0
+            };
+        }
+
+
 
         public List<Person> LuceneSearch(string textSearch)
         {
             return _luceneService.SearchIndex(textSearch);
+        }
+        
+        public int GetRandomForestSize()
+        {
+            return _randomForestSize;
+        }
+
+        public int GetSkillSetSize()
+        {
+            return _skillSetSize;
         }
 
         #region Training and Testing Sets

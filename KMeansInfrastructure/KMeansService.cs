@@ -26,9 +26,9 @@ namespace LinkedInSearchUi.KMeansInfrastructure
             _dataPointService = dataPointService;
         }
         
-        public void Train(List<Person> trainingPeople)
+        public void Train(List<Person> trainingPeople, int skillSetSize)
         {
-            double[][] inputs = _dataPointService.GenerateDataPointsFromPeople(trainingPeople);
+            double[][] inputs = _dataPointService.GenerateDataPointsFromPeople(trainingPeople, skillSetSize);
             KMeans kMeans = new KMeans(2);
 
             _clustersCollection = kMeans.Learn(inputs);
@@ -36,9 +36,9 @@ namespace LinkedInSearchUi.KMeansInfrastructure
             trainingPredictions = _clustersCollection.Decide(inputs);
         }
 
-        public void Test(List<Person> testingPeople)
+        public void Test(List<Person> testingPeople, int skillSetSize)
         {
-            var inputs = _dataPointService.GenerateDataPointsFromPeople(testingPeople);
+            var inputs = _dataPointService.GenerateDataPointsFromPeople(testingPeople, skillSetSize);
 
             testPredictions = _clustersCollection.Decide(inputs);
         }
