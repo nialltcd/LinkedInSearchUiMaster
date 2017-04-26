@@ -86,6 +86,7 @@ namespace LinkedInSearchUi.Model
                 _trainingPeople = trainingAndTestingSets[0];
                 _testingPeople = trainingAndTestingSets[1];
                 _jobName = jobName;
+                _luceneService = new LuceneService(_testingPeople);
             }
 
             //Train Machine Learning Models with training data
